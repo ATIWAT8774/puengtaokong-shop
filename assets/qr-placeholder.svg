@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 620" role="img" aria-label="QR Code placeholder">
+  <rect width="620" height="620" rx="36" fill="#fff"/>
+  <g fill="#111">
+    <path d="M55 55h170v170H55zm35 35v100h100V90zM395 55h170v170H395zm35 35v100h100V90zM55 395h170v170H55zm35 35v100h100V430z"/>
+    <rect x="270" y="55" width="55" height="55"/><rect x="270" y="135" width="55" height="90"/>
+    <rect x="265" y="270" width="60" height="60"/><rect x="350" y="270" width="60" height="60"/><rect x="435" y="270" width="130" height="60"/>
+    <rect x="270" y="355" width="60" height="130"/><rect x="355" y="355" width="60" height="60"/><rect x="440" y="355" width="125" height="60"/>
+    <rect x="355" y="440" width="60" height="125"/><rect x="440" y="440" width="60" height="60"/><rect x="520" y="440" width="45" height="125"/>
+  </g>
+  <rect x="120" y="278" width="380" height="64" rx="22" fill="#fff" stroke="#e53c72" stroke-width="5"/>
+  <text x="310" y="319" text-anchor="middle" font-family="Arial, Tahoma, sans-serif" font-size="27" font-weight="700" fill="#d63167">ใส่ QR รับเงินจริงที่นี่</text>
+</svg>
