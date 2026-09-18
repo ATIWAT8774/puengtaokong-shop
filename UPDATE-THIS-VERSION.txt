@@ -1,0 +1,14 @@
+อัปเดตเวอร์ชันนี้
+
+1) ตารางไซส์ใหม่ตามภาพ: XXS–5XL
+2) หน้าติดตามคำสั่งซื้อค้นหาได้จากเลขออเดอร์หรือชื่อผู้จอง โดยไม่ต้องกรอกเบอร์โทร
+3) ต้องอัปเดต Code.gs ใน Google Apps Script แล้ว Deploy > Manage deployments > Edit > New version > Deploy เพื่อเปิด action searchOrders
+4) URL /exec ใน config.js ใช้ตัวเดิมได้ หากแก้ deployment เดิมเป็น New version
+
+
+THAI ADDRESS UPDATE
+- จังหวัด / อำเภอ-เขต / ตำบล-แขวง เป็น dropdown เชื่อมกัน
+- รหัสไปรษณีย์เติมให้อัตโนมัติเมื่อเลือกตำบล/แขวง
+- ใช้ฐานข้อมูล Thailand Geography JSON ผ่าน jsDelivr และมี raw GitHub เป็น fallback
+- ถ้าโหลดฐานข้อมูลภายนอกไม่ได้ ระบบจะเปิดให้กรอกอำเภอ ตำบล รหัสไปรษณีย์เองเพื่อไม่ให้ลูกค้าติดค้าง
+- ไม่ต้องแก้หรือ Deploy Code.gs ใหม่ เพราะชื่อฟิลด์ที่ส่งเข้า Google Sheets เหมือนเดิม

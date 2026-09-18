@@ -1,0 +1,26 @@
+แก้ปัญหา: “เชื่อมต่อ Google Sheets ไม่สำเร็จ”
+
+สาเหตุ:
+เว็บชุดนี้เปิด index.html ได้โดยตรง (file://) จึงไม่ควรใช้ fetch() อ่านคำตอบจาก Google Apps Script แบบเดิม เพราะเบราว์เซอร์อาจบล็อกด้วย CORS/redirect ของ ContentService
+
+เวอร์ชันนี้แก้ transport แล้ว:
+- อ่านข้อมูล / หลังบ้าน ใช้ JSONP
+- สร้างออเดอร์ / อัปโหลดสลิป ใช้ HTML form POST ไปยัง hidden iframe แล้วเช็กผลกลับด้วย JSONP
+- ใช้งานได้แม้ดับเบิลคลิก index.html โดยไม่ต้อง npm start
+
+สิ่งที่ต้องทำ 1 ครั้ง:
+1) เปิด Apps Script โปรเจกต์เดิม
+2) แทน Code.gs ทั้งหมดด้วยไฟล์ google-apps-script/Code.gs ใน ZIP นี้
+3) กด Save
+4) Deploy > Manage deployments
+5) กด Edit (ไอคอนดินสอ)
+6) Version: New version
+7) Execute as: Me
+8) Who has access: Anyone
+9) กด Deploy
+10) URL /exec เดิมใช้ต่อได้ ไม่ต้องแก้ config.js
+
+ทดสอบ:
+- เปิด index.html > สั่งสินค้าทดลอง 1 รายการ
+- ตรวจว่ามีแถวใหม่ในชีต Orders
+- เปิด admin.html > ใส่รหัสหลังบ้าน > กดโหลดข้อมูล

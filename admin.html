@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#d72f63" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <title>ระบบหลังบ้าน | ศาลเจ้าปึงเฒ่ากง</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./admin.css" />
+</head>
+<body class="admin-page">
+<svg class="icon-sprite" aria-hidden="true">
+  <symbol id="i-lotus" viewBox="0 0 24 24"><path d="M12 19c-3.8-2.4-6.6-5.4-7.6-9.2 2.8.2 5 1.3 6.4 3.3-.2-3.3.2-6.1 1.2-8.3 1 2.2 1.4 5 1.2 8.3 1.4-2 3.6-3.1 6.4-3.3-1 3.8-3.8 6.8-7.6 9.2Z"/><path d="M4.5 18.7c4.8 1.6 10.2 1.6 15 0"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M18.5 16a8 8 0 1 1 .7-8.7L20 12"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m4.5 18 5-5 3.5 3 2.5-2.5 4 4.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/><path d="M17 11h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21V3Z"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+</svg>
+
+<header class="admin-topbar">
+  <div class="admin-shell admin-nav">
+    <div class="admin-brand" aria-label="ศาลเจ้าปึงเฒ่ากง ระบบหลังบ้าน">
+      <img class="admin-brand-logo" src="./assets/logo.png" alt="ศาลเจ้าปึงเฒ่ากง ชายทะเลบางสะพาน" />
+      <span class="admin-brand-label">ระบบหลังบ้าน</span>
+    </div>
+    <button id="refreshBtn" class="btn ghost admin-refresh" type="button"><svg class="icon"><use href="#i-refresh"></use></svg><span>รีเฟรช</span></button>
+  </div>
+</header>
+
+<main class="admin-shell admin-main">
+  <section class="admin-heading">
+    <div>
+      <span class="section-kicker">BACK OFFICE</span>
+      <h1>จัดการคำสั่งซื้อ</h1>
+      <p>ตรวจสลิป ยืนยันการชำระเงิน และอัปเดตสถานะสินค้า</p>
+    </div>
+    <div class="admin-account-card">
+      <span>บัญชีรับชำระ</span>
+      <strong>นายอธิวัฒน์ ทิมทอง</strong>
+      <small>พร้อมเพย์ 092-440-6151</small>
+    </div>
+  </section>
+
+  <section id="sheetConnection" class="sheet-connection">
+    <div class="sheet-connection-copy"><b>Google Sheets</b><span id="sheetConnectionStatus">กำลังตรวจสอบการเชื่อมต่อ</span></div>
+    <div id="adminAuthControls" class="admin-auth-controls">
+      <input id="adminTokenInput" type="password" inputmode="text" autocomplete="current-password" placeholder="รหัสหลังบ้าน" aria-label="รหัสหลังบ้าน" />
+      <button id="connectAdminBtn" class="btn primary" type="button">เชื่อมต่อ</button>
+      <button id="forgetAdminBtn" class="btn ghost" type="button" hidden>ออกจากระบบ</button>
+    </div>
+  </section>
+
+  <section class="stats-grid" aria-label="สรุปคำสั่งซื้อ">
+    <article class="stat-card"><span>คำสั่งซื้อทั้งหมด</span><strong id="statAll">0</strong><small>รายการ</small></article>
+    <article class="stat-card"><span>รอตรวจสลิป</span><strong id="statReview">0</strong><small>รายการ</small></article>
+    <article class="stat-card"><span>ยืนยันชำระแล้ว</span><strong id="statPaid">0</strong><small>รายการ</small></article>
+    <article class="stat-card"><span>ยอดที่ยืนยันแล้ว</span><strong id="statRevenue">0</strong><small>บาท</small></article>
+  </section>
+
+  <section class="admin-panel">
+    <div class="toolbar">
+      <label class="admin-search"><svg class="icon"><use href="#i-search"></use></svg><input id="searchInput" type="search" placeholder="ค้นหาเลขออเดอร์ ชื่อ หรือเบอร์โทร" autocomplete="off"></label>
+      <select id="statusFilter" aria-label="กรองตามสถานะ">
+        <option value="all">ทุกสถานะ</option>
+        <option value="payment_review">รอตรวจสอบสลิป</option>
+        <option value="payment_rejected">สลิปไม่ผ่าน</option>
+        <option value="paid">ยืนยันชำระแล้ว</option>
+        <option value="packing">กำลังจัดสินค้า</option>
+        <option value="shipped">จัดส่งแล้ว</option>
+        <option value="ready_pickup">พร้อมรับสินค้า</option>
+        <option value="completed">สำเร็จ</option>
+        <option value="cancelled">ยกเลิก</option>
+      </select>
+      <button id="summaryBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-printer"></use></svg>รวมออเดอร์ / พิมพ์</button>
+      <button id="exportBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-download"></use></svg>ส่งออก CSV</button>
+    </div>
+
+    <div id="desktopOrders" class="table-scroll admin-desktop-table">
+      <table class="admin-table admin-payment-table">
+        <thead><tr><th>คำสั่งซื้อ</th><th>ลูกค้า</th><th>รายการ</th><th>ยอด</th><th>วิธีรับ</th><th>สถานะ</th><th>สลิป / จัดการ</th></tr></thead>
+        <tbody id="adminOrders"></tbody>
+      </table>
+    </div>
+    <div id="mobileOrders" class="admin-order-cards"></div>
+    <div id="emptyState" class="admin-empty" hidden><svg class="icon"><use href="#i-receipt"></use></svg><strong>ไม่พบคำสั่งซื้อ</strong><span>ยังไม่มีข้อมูลที่ตรงกับตัวกรองนี้</span></div>
+  </section>
+
+  <section class="admin-note"><svg class="icon"><use href="#i-info"></use></svg><div><b>ฐานข้อมูลกลาง Google Sheets</b><span>เมื่อตั้งค่า Web app URL ใน config.js แล้ว ออเดอร์จากมือถือของลูกค้าทุกเครื่องจะเข้าชีตเดียวกัน และสลิปจะถูกเก็บใน Google Drive</span></div></section>
+</main>
+
+<dialog id="orderDialog" class="admin-dialog">
+  <div class="dialog-head"><div><span class="section-kicker">ORDER DETAIL</span><h2 id="dialogTitle">รายละเอียดคำสั่งซื้อ</h2></div><button id="closeDialog" class="dialog-close" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
+  <div id="dialogBody"></div>
+</dialog>
+
+
+<dialog id="summaryDialog" class="admin-dialog summary-dialog">
+  <div class="dialog-head no-print"><div><span class="section-kicker">ORDER SUMMARY</span><h2>รวมออเดอร์สำหรับพิมพ์</h2></div><button id="closeSummaryDialog" class="dialog-close" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
+  <div id="printOrderSummary" class="print-order-summary">
+    <div class="summary-print-head">
+      <div><strong>ศาลเจ้าปึงเฒ่ากง</strong><span>สรุปรายการสั่งเสื้อที่ระลึก</span></div>
+      <small id="summaryGeneratedAt"></small>
+    </div>
+    <div id="summarySizeTotals" class="summary-size-totals"></div>
+    <div id="summaryOrderLines" class="summary-order-lines"></div>
+    <div id="summaryFooter" class="summary-print-footer"></div>
+  </div>
+  <div class="summary-dialog-actions no-print">
+    <button id="copySummaryBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-copy"></use></svg>คัดลอกรายการ</button>
+    <button id="printSummaryBtn" class="btn primary" type="button"><svg class="icon"><use href="#i-printer"></use></svg>พิมพ์รายการ</button>
+  </div>
+</dialog>
+
+<dialog id="slipDialog" class="slip-dialog">
+  <div class="dialog-head"><div><span class="section-kicker">PAYMENT SLIP</span><h2 id="slipDialogTitle">สลิปการชำระเงิน</h2></div><button id="closeSlipDialog" class="dialog-close" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
+  <div class="slip-preview-wrap"><img id="slipDialogImage" alt="สลิปการชำระเงิน"></div>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="./config.js"></script>
+<script src="./sheet-api.js"></script>
+<script src="./admin.js"></script>
+</body>
+</html>
