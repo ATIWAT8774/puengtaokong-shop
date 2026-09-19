@@ -184,32 +184,6 @@ function formatThaiDateTime(value){
   if(!x) return '-';
   return `${x.day}/${x.month}/${Number(x.year)+543} ${x.hour}:${x.minute}`;
 }
-function currentThaiDateBE(){
-  const x=bangkokParts(new Date());
-  return `${x.day}/${x.month}/${Number(x.year)+543}`;
-}
-function currentThaiTime24(){
-  const x=bangkokParts(new Date());
-  return `${x.hour}:${x.minute}`;
-}
-function parseThaiTransferDateTime(dateText,timeText){
-  const dm=String(dateText||'').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if(!dm) throw new Error('กรุณากรอกวันที่แบบ วัน/เดือน/ปี พ.ศ. เช่น 19/09/2569');
-  let day=Number(dm[1]), month=Number(dm[2]), buddhistYear=Number(dm[3]);
-  if(buddhistYear < 2400 || buddhistYear > 2800) throw new Error('กรุณาระบุปีเป็น พ.ศ. 4 หลัก');
-  const year=buddhistYear-543;
-  const tm=String(timeText||'').trim().match(/^(\d{1,2}):(\d{2})$/);
-  if(!tm) throw new Error('กรุณากรอกเวลาแบบ 24 ชั่วโมง เช่น 16:30');
-  const hour=Number(tm[1]), minute=Number(tm[2]);
-  if(hour<0 || hour>23 || minute<0 || minute>59) throw new Error('เวลาไม่ถูกต้อง กรุณาใช้รูปแบบ 00:00–23:59');
-  const check=new Date(Date.UTC(year,month-1,day));
-  if(check.getUTCFullYear()!==year || check.getUTCMonth()!==month-1 || check.getUTCDate()!==day) throw new Error('วันที่โอนเงินไม่ถูกต้อง');
-  const yyyy=String(year).padStart(4,'0'), mm=String(month).padStart(2,'0'), dd=String(day).padStart(2,'0');
-  const hh=String(hour).padStart(2,'0'), mi=String(minute).padStart(2,'0');
-  return `${yyyy}-${mm}-${dd}T${hh}:${mi}:00+07:00`;
-}
-
-
 function emv(id, value){
   value = String(value);
   return id + String(value.length).padStart(2,'0') + value;
@@ -548,11 +522,7 @@ function compressImage(file){
 $('#submitSlipBtn').onclick = async () => {
   if(!state.currentOrder) return toast('ไม่พบคำสั่งซื้อ');
   if(!state.slipData) return toast('กรุณาแนบรูปสลิป');
-  const paidDate=$('#paidDate').value, paidTime=$('#paidTime').value;
-  if(!paidDate || !paidTime) return toast('กรุณาระบุวันที่และเวลาโอน');
-  let paidAt;
-  try { paidAt=parseThaiTransferDateTime(paidDate,paidTime); }
-  catch(err){ return toast(err.message || 'วันที่หรือเวลาไม่ถูกต้อง'); }
+  const paidAt = new Date().toISOString();
   const btn=$('#submitSlipBtn');
   setBusy(btn,true,'กำลังส่งสลิป...');
   try{
@@ -560,7 +530,6 @@ $('#submitSlipBtn').onclick = async () => {
       state.currentOrder = await sheetApi().uploadSlip({
         orderNo:state.currentOrder.orderNo,
         phone:state.currentOrder.customer.phone,
-        paidAt,
         slipData:state.slipData
       });
     }else{
@@ -657,8 +626,6 @@ function renderReceipt(o){
 
 function init(){
   hydrateConfig(); renderProduct(); renderCartBadge(); setupForms();
-  $('#paidDate').value=currentThaiDateBE();
-  $('#paidTime').value=currentThaiTime24();
   route((location.hash||'#home').slice(1),false);
 }
 init();
