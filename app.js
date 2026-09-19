@@ -21,12 +21,23 @@ const CONFIG = {
     name: 'เสื้อที่ระลึก ศาลเจ้าปึงเฒ่ากง',
     subtitle: 'ชายทะเลบางสะพาน',
     price: 200,
+    specialSizeFrom: 6,
+    specialSizeExtra: 50,
     sizes: ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'],
     description: 'เสื้อที่ระลึกโทนชมพู–ขาว ลายเจ้าแม่กวนอิม ด้านหลังเป็นลวดลายศาลเจ้าและบรรยากาศชายทะเลบางสะพาน',
     images: ['./assets/shirt-front.webp','./assets/shirt-back.webp','./assets/size-guide.webp'],
     imageLabels: ['ด้านหน้า','ด้านหลัง','ตารางไซส์']
   }
 };
+
+
+function isSpecialSize(size, product=CONFIG.product){
+  const m=String(size||'').toUpperCase().replace(/\s+/g,'').match(/^(\d+)XL$/);
+  return !!m && Number(m[1]) >= Number(product.specialSizeFrom || 6);
+}
+function unitPriceForSize(size, product=CONFIG.product){
+  return Number(product.price || 0) + (isSpecialSize(size, product) ? Number(product.specialSizeExtra || 0) : 0);
+}
 
 const THAI_ADDRESS_SOURCES = [
   'https://cdn.jsdelivr.net/gh/thailand-geography-data/thailand-geography-json@main/src/geography.json',
@@ -298,6 +309,9 @@ const state = {
   size: 'M', qty: 1, shipping: 'pickup', customer: null,
   currentOrder: null, slipData: null, lastRoute: 'home'
 };
+// Recalculate any cart saved by an older version so 6XL+ always uses the current special-size price.
+state.cart = state.cart.map(i => ({...i, price: unitPriceForSize(i.size)}));
+writeJSON('ptk-cart', state.cart);
 
 function toast(msg){
   const el = $('#toast');
@@ -347,11 +361,13 @@ function renderProduct(){
   const p = state.config.product;
   $('#productName').textContent = p.name;
   $('#productSubtitle').textContent = p.subtitle;
-  $('#productPrice').textContent = p.price;
+  $('#productPrice').textContent = unitPriceForSize(state.size, p);
+  const priceNote=$('#productPriceNote');
+  if(priceNote) priceNote.textContent = isSpecialSize(state.size,p) ? `ไซส์ ${state.size} เป็นไซส์พิเศษ +${p.specialSizeExtra} บาท/ตัว` : `ราคาปกติ ${p.price} บาท/ตัว • 6XL ขึ้นไป +${p.specialSizeExtra} บาท/ตัว`;
   $('#productDescription').textContent = p.description;
   setProductImage(p.images[0], 0);
   $('#thumbs').innerHTML = p.images.map((src,i) => `<button class="thumb ${i===0?'active':''}" data-img="${src}" data-img-index="${i}" aria-label="ดูภาพ${esc(p.imageLabels?.[i] || `สินค้า ${i+1}`)}"><img src="${src}" alt="${esc(p.imageLabels?.[i] || `ภาพสินค้า ${i+1}`)}" loading="lazy"></button>`).join('');
-  $('#sizeGrid').innerHTML = p.sizes.map(s => `<button class="size-btn ${s===state.size?'selected':''}" data-size="${s}">${s}</button>`).join('');
+  $('#sizeGrid').innerHTML = p.sizes.map(s => `<button class="size-btn ${s===state.size?'selected':''}" data-size="${s}"><span>${s}</span>${isSpecialSize(s,p)?`<small class="size-price-extra">+${p.specialSizeExtra}</small>`:''}</button>`).join('');
   $$('[data-size]').forEach(b => b.onclick = () => { state.size = b.dataset.size; renderProduct(); });
   $$('[data-img]').forEach(b => b.onclick = () => {
     const i = Number(b.dataset.imgIndex || 0);
@@ -370,10 +386,11 @@ $('#qtyMinus').onclick = () => { state.qty = Math.max(1, state.qty-1); $('#qtyVa
 $('#qtyPlus').onclick = () => { state.qty = Math.min(20, state.qty+1); $('#qtyValue').textContent = state.qty; };
 $('#addToCart').onclick = () => {
   const p = state.config.product;
+  const unitPrice = unitPriceForSize(state.size, p);
   const found = state.cart.find(i => i.productId===p.id && i.size===state.size);
-  if(found) found.qty = Math.min(99, found.qty + state.qty);
-  else state.cart.push({productId:p.id,name:p.name,size:state.size,qty:state.qty,price:p.price,image:p.images[0]});
-  saveCart(); toast('เพิ่มสินค้าลงตะกร้าแล้ว'); route('cart');
+  if(found){ found.qty = Math.min(99, found.qty + state.qty); found.price = unitPrice; }
+  else state.cart.push({productId:p.id,name:p.name,size:state.size,qty:state.qty,price:unitPrice,image:p.images[0]});
+  saveCart(); toast(isSpecialSize(state.size,p) ? `เพิ่มไซส์ ${state.size} ราคา ${unitPrice} บาท/ตัวแล้ว` : 'เพิ่มสินค้าลงตะกร้าแล้ว'); route('cart');
 };
 function cartSubtotal(){ return state.cart.reduce((s,i) => s + i.price*i.qty, 0); }
 function renderCart(){
