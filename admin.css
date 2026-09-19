@@ -1,89 +1,286 @@
-.admin-page{min-width:320px;background:#f7f3f5;padding-bottom:max(36px,env(safe-area-inset-bottom));}
-.admin-shell{width:min(100%,1380px);margin-inline:auto;padding-inline:14px}
-.admin-topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.admin-nav{min-height:68px;display:flex;align-items:center;gap:12px}
-.admin-brand{display:flex;align-items:center;gap:10px;min-width:0;margin-right:auto}
-.admin-brand-logo{display:block;width:clamp(145px,46vw,188px);height:auto;max-height:54px;object-fit:contain;object-position:left center}
-.admin-brand-label{font-size:11px;color:var(--muted);white-space:nowrap;border-left:1px solid var(--line);padding-left:10px}
-.admin-refresh{min-height:42px;padding-inline:12px}
-.admin-main{padding-top:22px}
-.admin-heading{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
-.admin-heading h1{font-size:clamp(28px,6vw,40px);margin:2px 0 4px}
-.admin-heading p{margin:0;color:var(--muted)}
-.admin-account-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:2px}
-.admin-account-card span{font-size:11px;color:var(--muted)}
-.admin-account-card strong{font-size:16px}
-.admin-account-card small{font-size:12px;color:var(--brand)}
-.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
-.stat-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow-sm);min-width:0}
-.stat-card span{display:block;font-size:12px;color:var(--muted);line-height:1.3}
-.stat-card strong{display:block;font-size:27px;line-height:1.15;margin:5px 0 1px;color:var(--ink);overflow-wrap:anywhere}
-.stat-card small{font-size:11px;color:var(--muted)}
-.admin-panel{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:12px}
-.toolbar{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:12px}
-.admin-search{min-height:46px;border:1px solid #dfd1d6;border-radius:13px;display:flex;align-items:center;gap:9px;padding-inline:12px;background:#fff}
-.admin-search:focus-within{border-color:#e68ca9;box-shadow:0 0 0 3px #fff0f5}
-.admin-search input{border:0;outline:0;min-width:0;width:100%;font:inherit;background:transparent}
-.toolbar select{min-height:46px;border:1px solid #dfd1d6;border-radius:13px;background:#fff;padding:0 12px;font:inherit;color:var(--ink)}
-.admin-desktop-table{display:none}
-.admin-order-cards{display:grid;gap:10px}
-.order-card{border:1px solid var(--line);border-radius:16px;padding:13px;background:#fff;min-width:0}
-.order-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
-.order-card-head strong{font-size:15px;overflow-wrap:anywhere}
-.order-card-head small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-.order-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin:10px 0}
-.order-card-kv{min-width:0}.order-card-kv span{display:block;color:var(--muted);font-size:10px}.order-card-kv b{display:block;font-size:13px;overflow-wrap:anywhere;font-weight:500}
-.order-card-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.order-card-actions .btn{min-height:42px;padding:8px 10px;font-size:12px}.order-card-actions .full-row{grid-column:1/-1}
-.admin-status-select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:11px;padding:7px 9px;background:#fff;font:inherit;font-size:12px}
-.admin-status-select:disabled{opacity:.6;background:#f5f1f2}
-.status-badge{white-space:nowrap}
-.status-rejected{background:#fff1f1;color:#b33131}
-.verified-time{display:block;color:#188153;margin-top:4px;font-size:10px}
-.admin-pay-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
-.btn.mini{min-height:34px;padding:6px 9px;border-radius:10px;font-size:11px}
-.confirm-pay{border:1px solid #aadfc8;background:#f4fff9;color:#168154}
-.reject-pay{border:1px solid #efc4c4;background:#fff7f7;color:#a92e2e}
-.admin-empty{padding:48px 16px;text-align:center;color:var(--muted);display:grid;place-items:center;gap:6px}.admin-empty[hidden]{display:none}.admin-empty .icon{width:34px;height:34px;color:var(--brand)}
-.admin-note{margin:14px 0 34px;background:#fff8fa;border:1px solid #efcad6;border-radius:16px;padding:13px;display:flex;gap:10px;align-items:flex-start;color:#725e66}.admin-note .icon{color:var(--brand);margin-top:2px}.admin-note b,.admin-note span{display:block}.admin-note span{font-size:12px;margin-top:2px}
-.admin-dialog,.slip-dialog{width:min(calc(100% - 20px),760px);max-height:calc(100dvh - 24px);border:0;border-radius:20px;padding:0;box-shadow:0 30px 80px rgba(44,25,32,.3);background:#fff;color:var(--ink)}
-.admin-dialog::backdrop,.slip-dialog::backdrop{background:rgba(39,23,30,.48);backdrop-filter:blur(3px)}
-.dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;background:#fff;border-bottom:1px solid var(--line)}
-.dialog-head h2{font-size:20px;margin:1px 0 0}.dialog-close{flex:0 0 42px;width:42px;height:42px;border:1px solid var(--line);border-radius:13px;background:#fff;display:grid;place-items:center}
-#dialogBody{padding:15px 16px 20px}.detail-section{margin-bottom:16px}.detail-section h3{font-size:14px;margin:0 0 7px}.detail-items{display:grid;gap:7px}.detail-item{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid var(--line);padding:8px 0;font-size:12px}.detail-item>span:first-child{min-width:0}.detail-total{font-size:17px;font-weight:600;color:var(--brand)}
-.slip-preview-wrap{padding:12px;background:#201d1f;min-height:260px;display:grid;place-items:center}.slip-preview-wrap img{display:block;max-width:100%;max-height:calc(100dvh - 130px);object-fit:contain;border-radius:10px}
-.toast{bottom:24px}
-@media(min-width:640px){.admin-shell{padding-inline:20px}.admin-heading{flex-direction:row;align-items:flex-end;justify-content:space-between}.admin-account-card{min-width:260px}.stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.toolbar{grid-template-columns:minmax(260px,1fr) 220px auto;align-items:center}.admin-order-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:980px){.admin-shell{padding-inline:24px}.admin-main{padding-top:28px}.admin-desktop-table{display:block}.admin-order-cards{display:none}.admin-panel{padding:16px}.admin-table{min-width:980px}.admin-table td{font-size:12px}.admin-table th{font-size:11px;color:var(--muted);font-weight:500}.admin-slip-cell{min-width:155px}.admin-status-followup{margin-top:7px}.admin-status-followup select{min-width:160px}.admin-account-card{padding:16px 18px}.stat-card{padding:17px}.stat-card strong{font-size:31px}}
-@media(max-width:390px){.admin-shell{padding-inline:10px}.admin-brand-logo{width:min(46vw,150px);max-height:46px}.admin-brand-label{display:none}.admin-refresh span{display:none}.admin-refresh{width:42px;padding:0}.order-card-grid{grid-template-columns:1fr}.order-card-actions{grid-template-columns:1fr}}
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const moneyNumber = n => Number(n || 0).toLocaleString('th-TH', {minimumFractionDigits:0,maximumFractionDigits:2});
+const money = n => moneyNumber(n) + ' บาท';
+const esc = v => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const STORAGE_KEY = 'ptk-orders';
+const PAID_STATUSES = new Set(['paid','packing','shipped','ready_pickup','completed']);
+const SUMMARY_EXCLUDED_STATUSES = new Set(['cancelled','payment_rejected']);
+const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'];
+let searchText = '';
+let filterStatus = 'all';
+let currentSummaryText = '';
+let remoteOrders = [];
+let adminToken = sessionStorage.getItem('ptk-admin-token') || '';
+let isLoading = false;
 
+function readJSON(key, fallback){ try{return JSON.parse(localStorage.getItem(key) || '') || fallback;}catch{return fallback;} }
+function writeJSON(key, value){ try{localStorage.setItem(key, JSON.stringify(value));return true;}catch{return false;} }
+function api(){ return window.PTKSheetAPI; }
+function remoteEnabled(){ return !!api()?.isConfigured?.(); }
+function getOrders(){ return remoteEnabled() ? remoteOrders : readJSON(STORAGE_KEY, []); }
+function saveLocalOrders(v){ return writeJSON(STORAGE_KEY, v); }
+function statusLabel(s){ return ({pending_payment:'รอชำระเงิน',payment_review:'รอตรวจสอบสลิป',payment_rejected:'สลิปไม่ผ่านการตรวจสอบ',paid:'ยืนยันชำระเงินแล้ว',packing:'กำลังจัดสินค้า',shipped:'จัดส่งแล้ว',ready_pickup:'พร้อมรับสินค้า',completed:'สำเร็จ',cancelled:'ยกเลิก'}[s]||s); }
+function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2600); }
+function orderItemsSummary(o){ const items=o.items||[]; if(!items.length) return '-'; return items.map(i=>`${i.size || '-'} × ${i.qty || 1}`).join(', '); }
+function formatDate(v){
+  if(!v) return '-';
+  const d=new Date(v); if(Number.isNaN(d.getTime())) return '-';
+  const x=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Bangkok',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d).reduce((o,p)=>(o[p.type]=p.value,o),{});
+  return `${x.day}/${x.month}/${Number(x.year)+543} ${x.hour}:${x.minute}`;
+}
+function customerAddress(o){ const c=o.customer||{}; return [c.address,c.subdistrict,c.district,c.province,c.postalCode].filter(Boolean).join(' '); }
+function displayCustomerName(name){
+  const n=String(name||'-').trim();
+  if(!n || n==='-') return '-';
+  return /^(คุณ|นาย|นางสาว|นาง|ดร\.|ดร\s|พระ|เด็กชาย|เด็กหญิง)/.test(n) ? n : `คุณ${n}`;
+}
+function sizeOrderValue(size){ const s=String(size||'').toUpperCase().replace(/\s+/g,''); const i=SIZE_ORDER.indexOf(s); return i>=0?i:999; }
+function groupedSizeSummary(o){
+  const map=new Map();
+  (o.items||[]).forEach(i=>{ const size=String(i.size||'-').toUpperCase(); map.set(size,(map.get(size)||0)+Number(i.qty||1)); });
+  return [...map.entries()].sort((a,b)=>sizeOrderValue(a[0])-sizeOrderValue(b[0]) || a[0].localeCompare(b[0])).map(([s,q])=>`${s} /${q}`).join('  ') || '-';
+}
+function paymentLineLabel(o){
+  if(PAID_STATUSES.has(o.status)) return 'ชำระเงินแล้ว';
+  return ({payment_review:'รอตรวจสลิป',payment_rejected:'สลิปไม่ผ่าน',pending_payment:'ยังไม่ชำระ',cancelled:'ยกเลิก'}[o.status]||statusLabel(o.status));
+}
+function receiveLineLabel(o){ return o.shipping==='shipping' ? '*จัดส่ง' : '*รับหน้างาน'; }
+function compactOrderLine(o){ return `${displayCustomerName(o.customer?.name)}  ${groupedSizeSummary(o)}  ${paymentLineLabel(o)}  ${receiveLineLabel(o)}`; }
+function summarySizeTotals(orders){
+  const map=new Map();
+  orders.forEach(o=>(o.items||[]).forEach(i=>{ const size=String(i.size||'-').toUpperCase(); map.set(size,(map.get(size)||0)+Number(i.qty||1)); }));
+  return [...map.entries()].sort((a,b)=>sizeOrderValue(a[0])-sizeOrderValue(b[0]) || a[0].localeCompare(b[0]));
+}
+function totalShirts(orders){ return orders.reduce((sum,o)=>sum+(o.items||[]).reduce((s,i)=>s+Number(i.qty||1),0),0); }
+function summaryEligibleOrders(orders){ return orders.filter(o=>!SUMMARY_EXCLUDED_STATUSES.has(o.status)); }
+function hasSlip(o){ return !!(o.slipUrl || o.slipData); }
 
-/* Order roll-up / printable order list */
-.summary-dialog{width:min(calc(100% - 20px),900px)}
-.print-order-summary{padding:18px 18px 8px;background:#fff;color:#211b1e}
-.summary-print-head{display:flex;flex-direction:column;gap:5px;border-bottom:2px solid #2f282b;padding-bottom:12px;margin-bottom:13px}
-.summary-print-head>div{display:flex;flex-direction:column}.summary-print-head strong{font-size:23px}.summary-print-head span{font-size:14px}.summary-print-head small{font-size:10px;color:var(--muted)}
-.summary-size-totals{border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:#fff9fb;margin-bottom:14px}.summary-total-title{font-size:14px;font-weight:600;margin-bottom:7px}.summary-size-chips{display:flex;flex-wrap:wrap;gap:6px}.summary-size-chips span{display:inline-flex;gap:5px;align-items:center;padding:5px 8px;border:1px solid #eadde2;border-radius:999px;background:#fff;font-size:11px}.summary-size-chips b{font-weight:600;color:var(--brand)}
-.summary-order-lines{display:grid;gap:0;border-top:1px solid #ddd}.summary-order-line{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px;border-bottom:1px solid #e5e0e2;padding:10px 0;break-inside:avoid}.summary-order-no{font-size:12px;color:#777;padding-top:2px}.summary-order-line>div{display:flex;flex-wrap:wrap;gap:5px 10px;align-items:baseline;min-width:0}.summary-order-line b{font-size:14px;font-weight:600}.summary-order-line span{font-size:13px}.summary-order-line em{font-size:12px;font-style:normal;color:#168154;font-weight:500}.summary-order-line strong{font-size:12px;color:var(--brand);font-weight:600}.summary-print-footer{padding:12px 0 4px;text-align:right;font-size:11px;color:#666}
-.summary-dialog-actions{position:sticky;bottom:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 16px 16px;background:linear-gradient(to bottom,rgba(255,255,255,.82),#fff 26%);border-top:1px solid var(--line)}
-@media(min-width:640px){.toolbar{grid-template-columns:minmax(240px,1fr) 190px auto auto}.summary-print-head{flex-direction:row;align-items:flex-end;justify-content:space-between}.summary-dialog-actions{display:flex;justify-content:flex-end}}
-@media(max-width:480px){.summary-dialog-actions{grid-template-columns:1fr}.print-order-summary{padding:14px 13px 6px}.summary-order-line>div{gap:3px 8px}.summary-order-line b{width:100%;font-size:14px}.summary-order-line span{font-size:12px}}
-@media print{
-  body.printing-order-summary *{visibility:hidden!important}
-  body.printing-order-summary #summaryDialog,body.printing-order-summary #summaryDialog *,body.printing-order-summary #printOrderSummary,body.printing-order-summary #printOrderSummary *{visibility:visible!important}
-  body.printing-order-summary{background:#fff!important;padding:0!important}
-  body.printing-order-summary #summaryDialog{display:block!important;position:absolute!important;inset:0!important;width:100%!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
-  body.printing-order-summary #summaryDialog::backdrop{display:none!important}
-  body.printing-order-summary .no-print{display:none!important}
-  body.printing-order-summary .print-order-summary{padding:0!important}
-  body.printing-order-summary .summary-print-head{margin-bottom:10px}.summary-size-totals{background:#fff!important;border-color:#aaa!important}
-  body.printing-order-summary .summary-order-line{padding:6px 0}.summary-order-line b{font-size:12pt}.summary-order-line span,.summary-order-line em,.summary-order-line strong{font-size:10pt}
-  @page{size:A4;margin:12mm}
+function filteredOrders(){
+  const q=searchText.trim().toLowerCase();
+  return getOrders().slice().sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).filter(o=>{
+    if(filterStatus!=='all' && o.status!==filterStatus) return false;
+    if(!q) return true;
+    const hay=[o.orderNo,o.customer?.name,o.customer?.phone,o.customer?.email].filter(Boolean).join(' ').toLowerCase();
+    return hay.includes(q);
+  });
 }
 
+function updateConnectionUI(message, state=''){
+  const box=$('#sheetConnection');
+  box.classList.remove('connected','error');
+  if(state) box.classList.add(state);
+  $('#sheetConnectionStatus').textContent=message;
+  const input=$('#adminTokenInput');
+  const connect=$('#connectAdminBtn');
+  const forget=$('#forgetAdminBtn');
+  if(!remoteEnabled()){
+    input.hidden=true; connect.hidden=true; forget.hidden=true;
+  }else if(adminToken){
+    input.hidden=true; connect.hidden=true; forget.hidden=false;
+  }else{
+    input.hidden=false; connect.hidden=false; forget.hidden=true;
+  }
+}
 
-/* Google Sheets connection */
-.sheet-connection{display:flex;flex-direction:column;gap:10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 14px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
-.sheet-connection.connected{border-color:#a8dfc8;background:#f8fffb}.sheet-connection.error{border-color:#efc4c4;background:#fff8f8}
-.sheet-connection-copy{display:flex;flex-direction:column;gap:2px}.sheet-connection-copy b{font-size:14px}.sheet-connection-copy span{font-size:12px;color:var(--muted)}
-.admin-auth-controls{display:grid;grid-template-columns:1fr auto;gap:8px}.admin-auth-controls input{min-width:0;min-height:44px;border:1px solid #dfd1d6;border-radius:12px;padding:9px 12px;font:inherit;outline:none}.admin-auth-controls input:focus{border-color:#e68ca9;box-shadow:0 0 0 3px #fff0f5}.admin-auth-controls #forgetAdminBtn{grid-column:1/-1}
-@media(min-width:640px){.sheet-connection{flex-direction:row;align-items:center;justify-content:space-between}.admin-auth-controls{grid-template-columns:minmax(220px,320px) auto auto}.admin-auth-controls #forgetAdminBtn{grid-column:auto}}
+function renderStats(){
+  const all=getOrders();
+  const review=all.filter(o=>o.status==='payment_review').length;
+  const paid=all.filter(o=>PAID_STATUSES.has(o.status)).length;
+  const revenue=all.filter(o=>PAID_STATUSES.has(o.status)).reduce((s,o)=>s+Number(o.total||0),0);
+  $('#statAll').textContent=all.length.toLocaleString('th-TH');
+  $('#statReview').textContent=review.toLocaleString('th-TH');
+  $('#statPaid').textContent=paid.toLocaleString('th-TH');
+  $('#statRevenue').textContent=moneyNumber(revenue);
+}
+
+function statusSelect(o, cls='admin-status-select'){
+  const waiting=o.status==='payment_review';
+  const statuses=['payment_review','payment_rejected','paid','packing','shipped','ready_pickup','completed','cancelled'];
+  return `<select class="${cls}" data-admin-status="${esc(o.orderNo)}" ${waiting?'disabled title="กรุณาตรวจสลิปก่อน"':''}>${statuses.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${statusLabel(s)}</option>`).join('')}</select>`;
+}
+function verifyActions(o){
+  if(o.status!=='payment_review' || !hasSlip(o)) return '';
+  return `<div class="admin-pay-actions"><button class="btn mini confirm-pay" data-confirm-pay="${esc(o.orderNo)}"><svg class="icon"><use href="#i-check"></use></svg>ยืนยันชำระ</button><button class="btn mini reject-pay" data-reject-pay="${esc(o.orderNo)}">ปฏิเสธ</button></div>`;
+}
+function slipAction(o){ return hasSlip(o)?`<button class="btn mini ghost" data-slip="${esc(o.orderNo)}"><svg class="icon"><use href="#i-image"></use></svg>ดูสลิป</button>`:'<span class="muted">ยังไม่มีสลิป</span>'; }
+function verifiedText(o){ return o.verifiedAt?`<small class="verified-time">ยืนยัน ${formatDate(o.verifiedAt)}</small>`:''; }
+
+function renderDesktop(orders){
+  $('#adminOrders').innerHTML=orders.map(o=>`<tr>
+    <td><button class="link-btn" data-detail="${esc(o.orderNo)}"><b>${esc(o.orderNo)}</b></button><br><small>${formatDate(o.createdAt)}</small></td>
+    <td>${esc(o.customer?.name||'-')}<br><small>${esc(o.customer?.phone||'-')}</small></td>
+    <td>${esc(orderItemsSummary(o))}</td>
+    <td><b>${money(o.total)}</b></td>
+    <td>${o.shipping==='shipping'?'จัดส่ง':'รับเอง'}</td>
+    <td><span class="status-badge ${o.status==='payment_rejected'?'status-rejected':''}">${statusLabel(o.status)}</span>${verifiedText(o)}<div class="admin-status-followup">${statusSelect(o,'admin-status-select')}</div></td>
+    <td><div class="admin-slip-cell">${slipAction(o)}${verifyActions(o)}</div></td>
+  </tr>`).join('');
+}
+
+function renderMobile(orders){
+  $('#mobileOrders').innerHTML=orders.map(o=>`<article class="order-card">
+    <div class="order-card-head"><div><strong>${esc(o.orderNo)}</strong><small>${formatDate(o.createdAt)}</small></div><span class="status-badge ${o.status==='payment_rejected'?'status-rejected':''}">${statusLabel(o.status)}</span></div>
+    <div class="order-card-grid">
+      <div class="order-card-kv"><span>ลูกค้า</span><b>${esc(o.customer?.name||'-')}</b></div>
+      <div class="order-card-kv"><span>โทรศัพท์</span><b>${esc(o.customer?.phone||'-')}</b></div>
+      <div class="order-card-kv"><span>ยอดรวม</span><b>${money(o.total)}</b></div>
+      <div class="order-card-kv"><span>วิธีรับ</span><b>${o.shipping==='shipping'?'จัดส่ง':'รับเอง'}</b></div>
+      <div class="order-card-kv" style="grid-column:1/-1"><span>รายการ</span><b>${esc(orderItemsSummary(o))}</b></div>
+    </div>
+    ${verifiedText(o)}
+    <div style="margin-top:8px">${statusSelect(o)}</div>
+    <div class="order-card-actions"><button class="btn ghost" data-detail="${esc(o.orderNo)}">ดูรายละเอียด</button>${hasSlip(o)?`<button class="btn ghost" data-slip="${esc(o.orderNo)}"><svg class="icon"><use href="#i-image"></use></svg>ดูสลิป</button>`:''}${o.status==='payment_review'&&hasSlip(o)?`<button class="btn confirm-pay full-row" data-confirm-pay="${esc(o.orderNo)}"><svg class="icon"><use href="#i-check"></use></svg>ยืนยันชำระเงิน</button><button class="btn reject-pay full-row" data-reject-pay="${esc(o.orderNo)}">ปฏิเสธสลิป</button>`:''}</div>
+  </article>`).join('');
+}
+
+function renderAll(){
+  renderStats();
+  const orders=filteredOrders();
+  renderDesktop(orders); renderMobile(orders);
+  $('#emptyState').hidden=orders.length!==0;
+  bindRowActions();
+}
+
+async function refreshOrders(showToast=false){
+  if(isLoading) return;
+  if(!remoteEnabled()){
+    updateConnectionUI('ยังไม่ได้ใส่ Web app URL ใน config.js — กำลังใช้ข้อมูลทดสอบในเบราว์เซอร์','error');
+    renderAll(); return;
+  }
+  if(!adminToken){
+    remoteOrders=[]; updateConnectionUI('เชื่อม Google Sheets แล้ว กรุณากรอกรหัสหลังบ้าน'); renderAll(); return;
+  }
+  isLoading=true;
+  updateConnectionUI('กำลังโหลดออเดอร์จาก Google Sheets...');
+  try{
+    remoteOrders=await api().listOrders(adminToken);
+    updateConnectionUI(`เชื่อมต่อแล้ว • ${remoteOrders.length.toLocaleString('th-TH')} ออเดอร์`,'connected');
+    renderAll(); if(showToast) toast('โหลดข้อมูลล่าสุดแล้ว');
+  }catch(err){
+    remoteOrders=[];
+    updateConnectionUI(err.message || 'เชื่อม Google Sheets ไม่สำเร็จ','error');
+    renderAll(); if(showToast) toast(err.message || 'โหลดข้อมูลไม่สำเร็จ');
+  }finally{ isLoading=false; }
+}
+
+async function updateOrderStatus(orderNo,status){
+  if(remoteEnabled()){
+    const updated=await api().updateStatus(adminToken,orderNo,status);
+    const i=remoteOrders.findIndex(o=>o.orderNo===orderNo); if(i>=0) remoteOrders[i]=updated;
+  }else{
+    const all=getOrders(), i=all.findIndex(o=>o.orderNo===orderNo); if(i<0) throw new Error('ไม่พบออเดอร์');
+    all[i].status=status; if(status==='paid'&&!all[i].verifiedAt) all[i].verifiedAt=new Date().toISOString();
+    saveLocalOrders(all);
+  }
+}
+
+function bindRowActions(){
+  $$('[data-admin-status]').forEach(sel=>sel.onchange=async()=>{
+    const old=sel.dataset.oldValue || '';
+    sel.disabled=true;
+    try{ await updateOrderStatus(sel.dataset.adminStatus,sel.value); toast('อัปเดตสถานะแล้ว'); renderAll(); }
+    catch(err){ toast(err.message || 'อัปเดตสถานะไม่สำเร็จ'); if(old) sel.value=old; }
+    finally{ sel.disabled=false; }
+  });
+  $$('[data-admin-status]').forEach(sel=>{sel.dataset.oldValue=sel.value;});
+  $$('[data-slip]').forEach(btn=>btn.onclick=()=>openSlip(btn.dataset.slip));
+  $$('[data-detail]').forEach(btn=>btn.onclick=()=>openDetail(btn.dataset.detail));
+  $$('[data-confirm-pay]').forEach(btn=>btn.onclick=()=>confirmPayment(btn.dataset.confirmPay));
+  $$('[data-reject-pay]').forEach(btn=>btn.onclick=()=>rejectPayment(btn.dataset.rejectPay));
+}
+
+async function confirmPayment(orderNo){
+  const o=getOrders().find(x=>x.orderNo===orderNo); if(!o) return;
+  if(!hasSlip(o)) return toast('ออเดอร์นี้ยังไม่มีสลิป');
+  if(!confirm(`ยืนยันว่าได้รับเงิน ${money(o.total)} สำหรับ ${o.orderNo} แล้วใช่หรือไม่?`)) return;
+  try{
+    if(remoteEnabled()){
+      const updated=await api().confirmPayment(adminToken,orderNo); const i=remoteOrders.findIndex(x=>x.orderNo===orderNo); if(i>=0) remoteOrders[i]=updated;
+    }else{
+      const all=getOrders(),i=all.findIndex(x=>x.orderNo===orderNo); all[i]={...all[i],status:'paid',verifiedAt:new Date().toISOString(),verifiedManually:true,rejectedAt:null}; saveLocalOrders(all);
+    }
+    toast('ยืนยันการชำระเงินแล้ว'); renderAll();
+  }catch(err){ toast(err.message || 'ยืนยันการชำระเงินไม่สำเร็จ'); }
+}
+async function rejectPayment(orderNo){
+  const o=getOrders().find(x=>x.orderNo===orderNo); if(!o) return;
+  if(!confirm(`ปฏิเสธสลิปของ ${o.orderNo} ใช่หรือไม่?`)) return;
+  try{
+    if(remoteEnabled()){
+      const updated=await api().rejectPayment(adminToken,orderNo); const i=remoteOrders.findIndex(x=>x.orderNo===orderNo); if(i>=0) remoteOrders[i]=updated;
+    }else{
+      const all=getOrders(),i=all.findIndex(x=>x.orderNo===orderNo); all[i]={...all[i],status:'payment_rejected',rejectedAt:new Date().toISOString(),verifiedAt:null,verifiedManually:false}; saveLocalOrders(all);
+    }
+    toast('ปฏิเสธสลิปแล้ว'); renderAll();
+  }catch(err){ toast(err.message || 'ปฏิเสธสลิปไม่สำเร็จ'); }
+}
+
+function openSlip(orderNo){
+  const o=getOrders().find(x=>x.orderNo===orderNo); const src=o?.slipUrl || o?.slipData;
+  if(!src)return toast('ไม่พบสลิป');
+  $('#slipDialogTitle').textContent=o.orderNo; $('#slipDialogImage').src=src; $('#slipDialog').showModal();
+}
+function openDetail(orderNo){
+  const o=getOrders().find(x=>x.orderNo===orderNo); if(!o)return;
+  const c=o.customer||{};
+  $('#dialogTitle').textContent=o.orderNo;
+  $('#dialogBody').innerHTML=`
+    <section class="detail-section"><h3>ข้อมูลลูกค้า</h3><div class="order-kv"><span>ชื่อ</span><b>${esc(c.name||'-')}</b></div><div class="order-kv"><span>โทรศัพท์</span><b>${esc(c.phone||'-')}</b></div>${c.email?`<div class="order-kv"><span>อีเมล</span><b>${esc(c.email)}</b></div>`:''}<div class="order-kv"><span>วิธีรับสินค้า</span><b>${o.shipping==='shipping'?'จัดส่งสินค้า':'รับด้วยตัวเอง'}</b></div>${o.shipping==='shipping'?`<div class="order-kv"><span>ที่อยู่</span><b>${esc(customerAddress(o)||'-')}</b></div>`:''}</section>
+    <section class="detail-section"><h3>รายการสินค้า</h3><div class="detail-items">${(o.items||[]).map(i=>`<div class="detail-item"><span>${esc(i.name||'เสื้อที่ระลึก')} / ${esc(i.size||'-')} × ${Number(i.qty||1)}</span><b>${money(i.lineTotal ?? Number(i.price||0)*Number(i.qty||1))}</b></div>`).join('')||'<span class="muted">ไม่มีรายการสินค้า</span>'}</div><div class="order-kv"><span>ค่าจัดส่ง</span><b>${money(o.shippingFee)}</b></div><div class="order-kv"><span>ยอดรวม</span><b class="detail-total">${money(o.total)}</b></div></section>
+    <section class="detail-section"><h3>การชำระเงิน</h3><div class="order-kv"><span>สถานะ</span><b>${statusLabel(o.status)}</b></div><div class="order-kv"><span>เวลาที่ลูกค้าแจ้งโอน</span><b>${formatDate(o.paidAt)}</b></div>${o.verifiedAt?`<div class="order-kv"><span>ยืนยันการชำระเงิน</span><b>${formatDate(o.verifiedAt)}</b></div>`:''}</section>`;
+  $('#orderDialog').showModal();
+}
+
+function openOrderSummary(){
+  const sourceOrders=filteredOrders();
+  const orders=summaryEligibleOrders(sourceOrders);
+  if(!orders.length) return toast('ไม่มีออเดอร์ที่นับรวมได้ (ไม่รวมยกเลิกและสลิปไม่ผ่าน)');
+  const excludedCount=sourceOrders.length-orders.length;
+  const totals=summarySizeTotals(orders);
+  $('#summaryGeneratedAt').textContent=`พิมพ์เมื่อ ${formatDate(new Date())} • ไม่รวมออเดอร์ยกเลิก/สลิปไม่ผ่าน${excludedCount?` ${excludedCount} ออเดอร์`:''}`;
+  $('#summarySizeTotals').innerHTML=`<div class="summary-total-title">รวมเสื้อ ${totalShirts(orders).toLocaleString('th-TH')} ตัว / ${orders.length.toLocaleString('th-TH')} ออเดอร์</div><div class="summary-size-chips">${totals.map(([s,q])=>`<span><b>${esc(s)}</b> ${Number(q).toLocaleString('th-TH')} ตัว</span>`).join('')}</div>`;
+  $('#summaryOrderLines').innerHTML=orders.map((o,i)=>`<div class="summary-order-line"><span class="summary-order-no">${i+1}.</span><div><b>${esc(displayCustomerName(o.customer?.name))}</b><span>${esc(groupedSizeSummary(o))}</span><em>${esc(paymentLineLabel(o))}</em><strong>${esc(receiveLineLabel(o))}</strong></div></div>`).join('');
+  $('#summaryFooter').textContent=`รวม ${orders.length.toLocaleString('th-TH')} ออเดอร์ • เสื้อ ${totalShirts(orders).toLocaleString('th-TH')} ตัว • ไม่รวมยกเลิก/สลิปไม่ผ่าน`;
+  currentSummaryText=orders.map(compactOrderLine).join('\n');
+  $('#summaryDialog').showModal();
+}
+async function copyOrderSummary(){
+  if(!currentSummaryText) return toast('ไม่มีรายการให้คัดลอก');
+  try{ await navigator.clipboard.writeText(currentSummaryText); toast('คัดลอกรายการแล้ว'); }
+  catch{ const ta=document.createElement('textarea'); ta.value=currentSummaryText; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('คัดลอกรายการแล้ว'); }
+}
+function printOrderSummary(){ document.body.classList.add('printing-order-summary'); setTimeout(()=>window.print(),50); }
+window.addEventListener('afterprint',()=>document.body.classList.remove('printing-order-summary'));
+
+function exportCSV(){
+  const orders=filteredOrders(); if(!orders.length)return toast('ไม่มีข้อมูลสำหรับส่งออก');
+  const rows=[['เลขคำสั่งซื้อ','วันที่','ชื่อลูกค้า','เบอร์โทร','รายการ','ยอดรวม','วิธีรับ','สถานะ','เวลายืนยันชำระ']];
+  orders.forEach(o=>rows.push([o.orderNo,formatDate(o.createdAt),o.customer?.name||'',o.customer?.phone||'',orderItemsSummary(o),Number(o.total||0),o.shipping==='shipping'?'จัดส่ง':'รับเอง',statusLabel(o.status),formatDate(o.verifiedAt)]));
+  const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url;a.download=`ptk-orders-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+$('#refreshBtn').onclick=()=>refreshOrders(true);
+$('#summaryBtn').onclick=openOrderSummary;
+$('#copySummaryBtn').onclick=copyOrderSummary;
+$('#printSummaryBtn').onclick=printOrderSummary;
+$('#exportBtn').onclick=exportCSV;
+$('#searchInput').oninput=e=>{searchText=e.target.value;renderAll();};
+$('#statusFilter').onchange=e=>{filterStatus=e.target.value;renderAll();};
+$('#closeDialog').onclick=()=>$('#orderDialog').close();
+$('#closeSlipDialog').onclick=()=>$('#slipDialog').close();
+$('#closeSummaryDialog').onclick=()=>$('#summaryDialog').close();
+$('#orderDialog').addEventListener('click',e=>{if(e.target===$('#orderDialog'))$('#orderDialog').close();});
+$('#slipDialog').addEventListener('click',e=>{if(e.target===$('#slipDialog'))$('#slipDialog').close();});
+$('#summaryDialog').addEventListener('click',e=>{if(e.target===$('#summaryDialog'))$('#summaryDialog').close();});
+$('#connectAdminBtn').onclick=()=>{
+  const token=$('#adminTokenInput').value.trim();
+  if(!token) return toast('กรุณากรอกรหัสหลังบ้าน');
+  adminToken=token; sessionStorage.setItem('ptk-admin-token',token); $('#adminTokenInput').value=''; refreshOrders();
+};
+$('#adminTokenInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#connectAdminBtn').click();});
+$('#forgetAdminBtn').onclick=()=>{adminToken='';sessionStorage.removeItem('ptk-admin-token');remoteOrders=[];refreshOrders();};
+
+renderAll();
+refreshOrders();
