@@ -183,6 +183,18 @@ function findRow_(orderNo) {
   return -1;
 }
 
+
+function isSpecialSize_(size) {
+  const m = String(size || '').toUpperCase().replace(/\s+/g,'').match(/^(\d+)XL$/);
+  return !!m && Number(m[1]) >= 6;
+}
+function unitPriceForSize_(size) {
+  return 200 + (isSpecialSize_(size) ? 50 : 0);
+}
+function validShirtSize_(size) {
+  return ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'].indexOf(String(size || '').toUpperCase().replace(/\s+/g,'')) >= 0;
+}
+
 function createOrder_(raw) {
   if (!raw || typeof raw !== 'object') throw new Error('ข้อมูลคำสั่งซื้อไม่ถูกต้อง');
   const lock = LockService.getScriptLock();
@@ -202,16 +214,20 @@ function createOrder_(raw) {
       postalCode: clean_(customerRaw.postalCode,20)
     };
     if (!customer.name || !customer.phone) throw new Error('กรุณาระบุชื่อและเบอร์โทร');
-    const items = Array.isArray(raw.items) ? raw.items.slice(0,50).map(i => ({
-      id: clean_(i.id,100), name: clean_(i.name,200), size: clean_(i.size,30),
-      qty: Math.max(1, Math.min(99, Math.round(num_(i.qty) || 1))),
-      price: Math.max(0, num_(i.price)), image: clean_(i.image,500), lineTotal: Math.max(0, num_(i.lineTotal))
-    })) : [];
+    const items = Array.isArray(raw.items) ? raw.items.slice(0,50).map(i => {
+      const size = clean_(i.size,30).toUpperCase().replace(/\s+/g,'');
+      if (!validShirtSize_(size)) throw new Error('พบไซส์เสื้อที่ไม่รองรับ: ' + size);
+      const qty = Math.max(1, Math.min(99, Math.round(num_(i.qty) || 1)));
+      const price = unitPriceForSize_(size);
+      return {
+        id: clean_(i.id,100), name: clean_(i.name,200), size,
+        qty, price, image: clean_(i.image,500), lineTotal: price * qty
+      };
+    }) : [];
     if (!items.length) throw new Error('ไม่มีสินค้าในคำสั่งซื้อ');
-    items.forEach(i => { if (!i.lineTotal) i.lineTotal = i.price * i.qty; });
     const subtotal = items.reduce((s,i)=>s+i.lineTotal,0);
     const shipping = raw.shipping === 'shipping' ? 'shipping' : 'pickup';
-    const shippingFee = shipping === 'shipping' ? Math.max(0,num_(raw.shippingFee)) : 0;
+    const shippingFee = shipping === 'shipping' ? 50 : 0;
     const now = new Date().toISOString();
     const order = {
       orderNo, createdAt: now, updatedAt: now, customer, shipping, items,
