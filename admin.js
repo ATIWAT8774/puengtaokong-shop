@@ -5,6 +5,7 @@ const money = n => moneyNumber(n) + ' บาท';
 const esc = v => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const STORAGE_KEY = 'ptk-orders';
 const PAID_STATUSES = new Set(['paid','packing','shipped','ready_pickup','completed']);
+const SUMMARY_EXCLUDED_STATUSES = new Set(['cancelled','payment_rejected']);
 const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'];
 let searchText = '';
 let filterStatus = 'all';
@@ -52,6 +53,7 @@ function summarySizeTotals(orders){
   return [...map.entries()].sort((a,b)=>sizeOrderValue(a[0])-sizeOrderValue(b[0]) || a[0].localeCompare(b[0]));
 }
 function totalShirts(orders){ return orders.reduce((sum,o)=>sum+(o.items||[]).reduce((s,i)=>s+Number(i.qty||1),0),0); }
+function summaryEligibleOrders(orders){ return orders.filter(o=>!SUMMARY_EXCLUDED_STATUSES.has(o.status)); }
 function hasSlip(o){ return !!(o.slipUrl || o.slipData); }
 
 function filteredOrders(){
@@ -226,18 +228,20 @@ function openDetail(orderNo){
   $('#dialogBody').innerHTML=`
     <section class="detail-section"><h3>ข้อมูลลูกค้า</h3><div class="order-kv"><span>ชื่อ</span><b>${esc(c.name||'-')}</b></div><div class="order-kv"><span>โทรศัพท์</span><b>${esc(c.phone||'-')}</b></div>${c.email?`<div class="order-kv"><span>อีเมล</span><b>${esc(c.email)}</b></div>`:''}<div class="order-kv"><span>วิธีรับสินค้า</span><b>${o.shipping==='shipping'?'จัดส่งสินค้า':'รับด้วยตัวเอง'}</b></div>${o.shipping==='shipping'?`<div class="order-kv"><span>ที่อยู่</span><b>${esc(customerAddress(o)||'-')}</b></div>`:''}</section>
     <section class="detail-section"><h3>รายการสินค้า</h3><div class="detail-items">${(o.items||[]).map(i=>`<div class="detail-item"><span>${esc(i.name||'เสื้อที่ระลึก')} / ${esc(i.size||'-')} × ${Number(i.qty||1)}</span><b>${money(i.lineTotal ?? Number(i.price||0)*Number(i.qty||1))}</b></div>`).join('')||'<span class="muted">ไม่มีรายการสินค้า</span>'}</div><div class="order-kv"><span>ค่าจัดส่ง</span><b>${money(o.shippingFee)}</b></div><div class="order-kv"><span>ยอดรวม</span><b class="detail-total">${money(o.total)}</b></div></section>
-    <section class="detail-section"><h3>การชำระเงิน</h3><div class="order-kv"><span>สถานะ</span><b>${statusLabel(o.status)}</b></div><div class="order-kv"><span>เวลาที่ลูกค้าแจ้งโอน</span><b>${formatDate(o.paidAt)}</b></div>${o.verifiedAt?`<div class="order-kv"><span>ยืนยันการชำระเงิน</span><b>${formatDate(o.verifiedAt)}</b></div>`:''}</section>`;
+    <section class="detail-section"><h3>การชำระเงิน</h3><div class="order-kv"><span>สถานะ</span><b>${statusLabel(o.status)}</b></div><div class="order-kv"><span>เวลาที่ส่งสลิป</span><b>${formatDate(o.paidAt)}</b></div>${o.verifiedAt?`<div class="order-kv"><span>ยืนยันการชำระเงิน</span><b>${formatDate(o.verifiedAt)}</b></div>`:''}</section>`;
   $('#orderDialog').showModal();
 }
 
 function openOrderSummary(){
-  const orders=filteredOrders();
-  if(!orders.length) return toast('ไม่มีออเดอร์สำหรับรวมรายการ');
+  const sourceOrders=filteredOrders();
+  const orders=summaryEligibleOrders(sourceOrders);
+  if(!orders.length) return toast('ไม่มีออเดอร์ที่นับรวมได้ (ไม่รวมยกเลิกและสลิปไม่ผ่าน)');
+  const excludedCount=sourceOrders.length-orders.length;
   const totals=summarySizeTotals(orders);
-  $('#summaryGeneratedAt').textContent=`พิมพ์เมื่อ ${formatDate(new Date())}`;
+  $('#summaryGeneratedAt').textContent=`พิมพ์เมื่อ ${formatDate(new Date())} • ไม่รวมออเดอร์ยกเลิก/สลิปไม่ผ่าน${excludedCount?` ${excludedCount} ออเดอร์`:''}`;
   $('#summarySizeTotals').innerHTML=`<div class="summary-total-title">รวมเสื้อ ${totalShirts(orders).toLocaleString('th-TH')} ตัว / ${orders.length.toLocaleString('th-TH')} ออเดอร์</div><div class="summary-size-chips">${totals.map(([s,q])=>`<span><b>${esc(s)}</b> ${Number(q).toLocaleString('th-TH')} ตัว</span>`).join('')}</div>`;
   $('#summaryOrderLines').innerHTML=orders.map((o,i)=>`<div class="summary-order-line"><span class="summary-order-no">${i+1}.</span><div><b>${esc(displayCustomerName(o.customer?.name))}</b><span>${esc(groupedSizeSummary(o))}</span><em>${esc(paymentLineLabel(o))}</em><strong>${esc(receiveLineLabel(o))}</strong></div></div>`).join('');
-  $('#summaryFooter').textContent=`รวม ${orders.length.toLocaleString('th-TH')} ออเดอร์ • เสื้อ ${totalShirts(orders).toLocaleString('th-TH')} ตัว`;
+  $('#summaryFooter').textContent=`รวม ${orders.length.toLocaleString('th-TH')} ออเดอร์ • เสื้อ ${totalShirts(orders).toLocaleString('th-TH')} ตัว • ไม่รวมยกเลิก/สลิปไม่ผ่าน`;
   currentSummaryText=orders.map(compactOrderLine).join('\n');
   $('#summaryDialog').showModal();
 }
