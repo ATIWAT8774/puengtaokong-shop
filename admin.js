@@ -5,7 +5,7 @@ const money = n => moneyNumber(n) + ' บาท';
 const esc = v => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const STORAGE_KEY = 'ptk-orders';
 const PAID_STATUSES = new Set(['paid','packing','shipped','ready_pickup','completed']);
-const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
+const SIZE_ORDER = ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'];
 let searchText = '';
 let filterStatus = 'all';
 let currentSummaryText = '';
