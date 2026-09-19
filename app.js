@@ -21,7 +21,7 @@ const CONFIG = {
     name: 'เสื้อที่ระลึก ศาลเจ้าปึงเฒ่ากง',
     subtitle: 'ชายทะเลบางสะพาน',
     price: 200,
-    sizes: ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL'],
+    sizes: ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'],
     description: 'เสื้อที่ระลึกโทนชมพู–ขาว ลายเจ้าแม่กวนอิม ด้านหลังเป็นลวดลายศาลเจ้าและบรรยากาศชายทะเลบางสะพาน',
     images: ['./assets/shirt-front.webp','./assets/shirt-back.webp','./assets/size-guide.webp'],
     imageLabels: ['ด้านหน้า','ด้านหลัง','ตารางไซส์']
