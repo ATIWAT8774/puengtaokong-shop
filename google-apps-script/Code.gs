@@ -192,7 +192,7 @@ function unitPriceForSize_(size) {
   return 200 + (isSpecialSize_(size) ? 50 : 0);
 }
 function validShirtSize_(size) {
-  return ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'].indexOf(String(size || '').toUpperCase().replace(/\s+/g,'')) >= 0;
+  return ['BS','BM','BL','BXL','XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'].indexOf(String(size || '').toUpperCase().replace(/\s+/g,'')) >= 0;
 }
 
 function createOrder_(raw) {
