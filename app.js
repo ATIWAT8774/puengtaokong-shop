@@ -23,7 +23,7 @@ const CONFIG = {
     price: 200,
     specialSizeFrom: 6,
     specialSizeExtra: 50,
-    sizes: ['XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'],
+    sizes: ['BS','BM','BL','BXL','XXS','XS','S','M','L','XL','2XL','3XL','4XL','5XL','6XL','7XL'],
     description: 'เสื้อที่ระลึกโทนชมพู–ขาว ลายเจ้าแม่กวนอิม ด้านหลังเป็นลวดลายศาลเจ้าและบรรยากาศชายทะเลบางสะพาน',
     images: ['./assets/shirt-front.webp','./assets/shirt-back.webp','./assets/size-guide.webp'],
     imageLabels: ['ด้านหน้า','ด้านหลัง','ตารางไซส์']
