@@ -87,3 +87,103 @@
 .sheet-connection-copy{display:flex;flex-direction:column;gap:2px}.sheet-connection-copy b{font-size:14px}.sheet-connection-copy span{font-size:12px;color:var(--muted)}
 .admin-auth-controls{display:grid;grid-template-columns:1fr auto;gap:8px}.admin-auth-controls input{min-width:0;min-height:44px;border:1px solid #dfd1d6;border-radius:12px;padding:9px 12px;font:inherit;outline:none}.admin-auth-controls input:focus{border-color:#e68ca9;box-shadow:0 0 0 3px #fff0f5}.admin-auth-controls #forgetAdminBtn{grid-column:1/-1}
 @media(min-width:640px){.sheet-connection{flex-direction:row;align-items:center;justify-content:space-between}.admin-auth-controls{grid-template-columns:minmax(220px,320px) auto auto}.admin-auth-controls #forgetAdminBtn{grid-column:auto}}
+
+/* Back-office dashboard and shipping */
+.admin-insights{display:grid;grid-template-columns:1fr;gap:12px;margin:0 0 14px}
+.insight-panel{min-width:0;overflow:hidden}.insight-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:5px;margin-bottom:12px}.insight-head h2{margin:0;font-size:16px}.insight-head span{color:var(--muted);font-size:11px}
+.sales-chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;min-height:156px;align-items:end}.sales-chart-col{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}.sales-chart-value{font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sales-chart-track{width:100%;height:95px;border-radius:9px 9px 4px 4px;display:flex;align-items:flex-end;background:#fff0f4;overflow:hidden}.sales-chart-fill{width:100%;min-height:2px;background:linear-gradient(#e6759b,#bf3c69);border-radius:8px 8px 3px 3px}.sales-chart-day{font-size:10px;color:var(--muted);white-space:nowrap}
+.size-breakdown{display:flex;flex-wrap:wrap;gap:8px;align-content:start;min-height:130px}.size-chip{background:#fff6fa;border:1px solid #f3d9e2;border-radius:12px;padding:8px 11px;font-size:12px}.size-chip b{color:var(--brand)}.insight-empty{color:var(--muted);font-size:12px}
+.shipment-mini{display:block;color:var(--brand);font-size:11px;overflow-wrap:anywhere}.shipment-status{display:block;color:#64748b;font-size:10px;line-height:1.4}
+.shipping-form{display:grid;gap:11px}.shipping-form label{display:grid;gap:5px;font-size:12px;color:var(--muted)}.shipping-form input,.shipping-form textarea{width:100%;min-height:43px;border:1px solid var(--line);border-radius:11px;padding:9px 11px;color:var(--ink);background:#fff;font:inherit}.shipping-form textarea{resize:vertical;min-height:80px}.shipping-actions{display:flex;flex-wrap:wrap;gap:8px}.shipping-actions .btn{min-height:42px}.tracking-history{display:grid;gap:8px;margin-top:12px}.tracking-event{border-left:3px solid #e6759b;padding:5px 11px;background:#fff8fa;font-size:12px}.tracking-event small{display:block;color:var(--muted)}.shipping-hint{color:var(--muted);font-size:11px;line-height:1.6}
+@media(min-width:850px){.admin-insights{grid-template-columns:1.2fr 1fr}}
+@media(max-width:640px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v2: status chips, manual order creation, and readable parcel labels */
+.order-panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:3px 2px 15px}
+.order-panel-head h2{font-size:21px;margin:2px 0 0}
+.order-panel-head p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.order-status-tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 1px 12px;margin-bottom:8px;scrollbar-width:thin}
+.order-filter-tab{flex:0 0 auto;border:1px solid #ebd8df;border-radius:999px;padding:9px 13px;background:#fff;color:#6b5260;font:500 12px Kanit,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.order-filter-tab b{font-size:11px;border-radius:50px;padding:2px 7px;background:#f7eff2;color:#755f67}
+.order-filter-tab.active{background:#a82e54;border-color:#a82e54;color:#fff;box-shadow:0 3px 12px #a82e5426}
+.order-filter-tab.active b{background:#ffffff2a;color:#fff}
+.admin-slip-cell{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px}
+.admin-slip-cell .admin-pay-actions{width:100%}
+.detail-print{padding:5px 0 9px;display:flex;justify-content:flex-end}
+.manual-order-dialog{width:min(calc(100% - 20px),720px)}
+.manual-order-form{display:grid;gap:14px;padding:16px 19px 19px;max-height:calc(100dvh - 100px);overflow-y:auto}
+.manual-order-form label{display:grid;gap:5px;color:#54424a;font-size:12px;font-weight:500;min-width:0}
+.manual-order-form label b{color:#c4476c}
+.manual-order-form :is(input,select,textarea){font:400 14px Kanit,sans-serif;color:#2c2428;min-width:0;width:100%;padding:10px 12px;background:#fff;border:1px solid #ddcfd5;border-radius:11px;outline:none}
+.manual-order-form :is(input,select,textarea):focus{border-color:#c4476c;box-shadow:0 0 0 3px #fae9ef}
+.manual-order-form textarea{resize:vertical}
+.manual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.manual-order-form fieldset{border:1px solid #eadde1;border-radius:15px;padding:12px;margin:0;min-width:0}
+.manual-order-form fieldset[hidden]{display:none}
+.manual-order-form legend{padding:0 8px;font-weight:600;font-size:14px;color:#9a2548}
+.manual-address>label{margin-bottom:11px}
+.manual-size-rows{display:grid;gap:8px;margin-bottom:9px}
+.manual-size-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;align-items:end;gap:8px}
+.manual-remove-size{min-height:42px}
+.manual-order-total{border:1px solid #edd2dd;border-radius:13px;padding:12px 15px;background:#fff6fa;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.manual-order-total strong{color:#9a2548;font-size:22px}
+.manual-form-actions{display:flex;justify-content:flex-end;position:sticky;bottom:-19px;padding:12px 0 0;background:linear-gradient(transparent,#fff 35%)}
+.manual-form-actions .btn{min-width:170px}
+
+/* V3 — multi-order selection and pre-imposed A4 sheets */
+.label-batch-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid #ead5dc;background:#fff8fa;border-radius:14px;padding:12px;margin:12px 0}
+.label-batch-tools .btn{font-size:12px;min-height:40px}
+.label-batch-tools .btn:disabled{opacity:.42;cursor:not-allowed}
+.label-batch-tools p{flex:1 0 100%;font-size:11px;color:#685b60;margin:0}
+.batch-select-all,.order-card-select{display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer}
+.order-card-select{align-self:flex-start;white-space:nowrap;padding-top:2px}
+.order-select-checkbox,.batch-select-all input{appearance:auto;width:18px;height:18px;accent-color:#a82e54;cursor:pointer;flex-shrink:0}
+.order-select-checkbox:disabled{cursor:not-allowed}
+.label-dialog{width:min(calc(100% - 20px),850px)}
+.parcel-print-area{padding:12px;background:#eee;display:grid;gap:16px;justify-items:center;overflow:auto;max-height:65vh}
+.parcel-print-page{box-sizing:border-box;width:210mm;height:296mm;background:#fff;display:grid;align-content:start;box-shadow:0 6px 24px #0002;flex-shrink:0}
+.parcel-print-page-shipping{padding:10mm;grid-template-columns:repeat(2,50mm);grid-template-rows:repeat(4,50mm);gap:5mm;justify-content:center}
+.parcel-print-page-pickup{padding:9mm 6mm;grid-template-columns:repeat(5,38mm);grid-template-rows:repeat(5,44mm);gap:2mm;justify-content:center}
+.parcel-label{box-sizing:border-box;min-width:0;min-height:0;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;overflow-wrap:anywhere;color:#231f20;background:#fff;border:.28mm solid #915369;padding:1.8mm 2mm;font-family:Kanit,'Noto Sans Thai',Tahoma,sans-serif;line-height:1.18;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.parcel-brand{display:flex;align-items:center;justify-content:space-between;gap:1mm;border-bottom:.16mm solid #d5aeb7;padding-bottom:.65mm;min-width:0}
+.parcel-brand strong{color:#81354c;font-size:6pt;white-space:nowrap}
+.parcel-brand strong span{color:#846b73;font-weight:400;font-size:4.6pt}
+.parcel-brand small{font-size:4.9pt;color:#6a5a5d;max-width:40%;overflow-wrap:anywhere;text-align:right}
+.parcel-name{font-size:10.4pt;font-weight:700;line-height:1.15;margin-top:1.3mm;overflow-wrap:anywhere;max-height:9.2mm;overflow:hidden}
+.parcel-phone{font-size:9pt;font-weight:700;line-height:1.15;margin-top:.5mm;color:#61273c}
+.parcel-address{border-top:.15mm solid #ead6da;margin-top:1mm;padding-top:1mm;min-height:0;display:flex;flex-direction:column;gap:.8mm;flex:1}
+.parcel-address-main{font-size:6.8pt;line-height:1.25;font-weight:500;overflow-wrap:anywhere;min-height:0;overflow:hidden}
+.parcel-postal{font-size:9pt;line-height:1;font-weight:700;letter-spacing:.1em;margin-top:auto}
+.parcel-label-dense .parcel-name{font-size:9.2pt;margin-top:.7mm;max-height:6.9mm}
+.parcel-label-dense .parcel-phone{font-size:8.3pt}
+.parcel-label-dense .parcel-address-main{font-size:6pt;line-height:1.15}
+.parcel-label-dense .parcel-postal{font-size:8pt}
+.parcel-footer{margin-top:auto;padding-top:.6mm;border-top:.3mm solid #915369;display:flex;align-items:flex-end;justify-content:space-between;gap:.7mm;min-width:0}
+.parcel-footer span{font-size:8.3pt;font-weight:700;color:#2a2425;line-height:1.13;min-width:0}
+.parcel-footer b{font-size:5pt;flex-shrink:0;font-weight:400;color:#695a5e}
+.parcel-label-pickup{padding:1.7mm;justify-content:flex-start}
+.parcel-label-pickup .parcel-brand strong{font-size:5.4pt}
+.parcel-label-pickup .parcel-name{font-size:9.6pt;max-height:13mm;margin-top:3mm}
+.parcel-label-pickup .parcel-phone{font-size:8.4pt;margin-top:1.5mm}
+.parcel-label-pickup .parcel-footer{margin-top:auto;padding-top:1mm}
+.parcel-label-pickup .parcel-footer span{font-size:8pt}
+.label-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px 16px;background:#fff}
+.label-actions span{font-size:11px;color:var(--muted);max-width:520px}
+@media(max-width:700px){.parcel-print-area{display:block;overflow:auto}.label-actions{flex-wrap:wrap}}
+@media print{
+  @page{size:A4 portrait;margin:0}
+  html,body{margin:0!important;padding:0!important;width:210mm!important;min-height:0!important;background:#fff!important}
+  body.printing-parcel-label > :not(#labelDialog){display:none!important}
+  body.printing-parcel-label #labelDialog{display:block!important;position:static!important;inset:auto!important;box-sizing:border-box!important;width:210mm!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+  body.printing-parcel-label #labelDialog::backdrop{display:none!important}
+  body.printing-parcel-label #labelDialog > :not(#parcelPrintArea){display:none!important}
+  body.printing-parcel-label #parcelPrintArea{display:block!important;width:210mm!important;max-height:none!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important}
+  body.printing-parcel-label .parcel-print-page{transform:none!important;display:grid!important;margin:0!important;box-shadow:none!important;width:210mm!important;height:296mm!important;break-inside:avoid!important;break-after:page!important;page-break-after:always!important}
+  body.printing-parcel-label .parcel-print-page:last-child{break-after:auto!important;page-break-after:auto!important}
+  body.printing-parcel-label .parcel-label{break-inside:avoid!important}
+  body.printing-parcel-label .parcel-label:after{display:none!important}
+}
+/* Keep the order-summary report readable when using the shared A4 zero-margin print rule. */
+@media print{
+  body.printing-order-summary #printOrderSummary{padding:12mm!important}
+}
