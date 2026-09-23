@@ -42,8 +42,8 @@
   <section class="admin-heading">
     <div>
       <span class="section-kicker">BACK OFFICE</span>
-      <h1>จัดการคำสั่งซื้อ</h1>
-      <p>ตรวจสลิป ยืนยันการชำระเงิน และอัปเดตสถานะสินค้า</p>
+      <h1>ภาพรวมร้านค้าและคำสั่งซื้อ</h1>
+      <p>ตรวจสลิป จัดสินค้า จัดส่ง และติดตามพัสดุได้จากหลังบ้านเดียวกัน</p>
     </div>
     <div class="admin-account-card">
       <span>บัญชีรับชำระ</span>
@@ -66,13 +66,33 @@
     <article class="stat-card"><span>รอตรวจสลิป</span><strong id="statReview">0</strong><small>รายการ</small></article>
     <article class="stat-card"><span>ยืนยันชำระแล้ว</span><strong id="statPaid">0</strong><small>รายการ</small></article>
     <article class="stat-card"><span>ยอดที่ยืนยันแล้ว</span><strong id="statRevenue">0</strong><small>บาท</small></article>
+    <article class="stat-card"><span>รอแพ็ก / รอจัดส่ง</span><strong id="statToShip">0</strong><small>รายการ (เฉพาะจัดส่ง)</small></article>
+    <article class="stat-card"><span>ส่งออกแล้ว</span><strong id="statShipped">0</strong><small>รายการ</small></article>
+    <article class="stat-card"><span>รับสินค้าหน้างาน</span><strong id="statPickup">0</strong><small>รายการ</small></article>
+    <article class="stat-card"><span>จำนวนเสื้อที่ขายแล้ว</span><strong id="statShirts">0</strong><small>ตัว (ชำระเงินแล้ว)</small></article>
+  </section>
+
+  <section class="admin-insights" aria-label="ภาพรวมยอดขายและไซส์เสื้อ">
+    <div class="admin-panel insight-panel">
+      <div class="insight-head"><h2>ยอดออเดอร์ที่ชำระแล้ว 7 วันย้อนหลัง</h2><span id="salesPeriodLabel">เฉพาะรายการที่ยืนยันชำระแล้ว</span></div>
+      <div id="salesChart" class="sales-chart" role="img" aria-label="กราฟยอดออเดอร์ที่ชำระแล้ว 7 วันย้อนหลัง"></div>
+    </div>
+    <div class="admin-panel insight-panel">
+      <div class="insight-head"><h2>เสื้อที่ขาย แยกตามไซส์</h2><span>เฉพาะรายการที่ยืนยันชำระแล้ว</span></div>
+      <div id="sizeBreakdown" class="size-breakdown"></div>
+    </div>
   </section>
 
   <section class="admin-panel">
+    <div class="order-panel-head"><div><span class="section-kicker">ORDER MANAGEMENT</span><h2>รายการคำสั่งซื้อ</h2><p>เลือกปุ่มสถานะเพื่อกรองรายการ พร้อมค้นหาชื่อ เบอร์โทร หรือเลขออเดอร์</p></div><button id="newOrderBtn" class="btn primary" type="button">＋ เพิ่มออเดอร์</button></div>
+    <nav id="orderStatusTabs" class="order-status-tabs" aria-label="กรองสถานะคำสั่งซื้อ"></nav>
     <div class="toolbar">
-      <label class="admin-search"><svg class="icon"><use href="#i-search"></use></svg><input id="searchInput" type="search" placeholder="ค้นหาเลขออเดอร์ ชื่อ หรือเบอร์โทร" autocomplete="off"></label>
+      <label class="admin-search"><svg class="icon"><use href="#i-search"></use></svg><input id="searchInput" type="search" placeholder="ค้นหาเลขออเดอร์ ชื่อ เบอร์โทร หรือเลขพัสดุ" autocomplete="off"></label>
       <select id="statusFilter" aria-label="กรองตามสถานะ">
         <option value="all">ทุกสถานะ</option>
+        <option value="pending_payment">รอชำระเงิน</option>
+        <option value="to_ship">รอจัดส่ง (ชำระเงินแล้ว)</option>
+        <option value="shipping">ออเดอร์จัดส่งทั้งหมด</option>
         <option value="payment_review">รอตรวจสอบสลิป</option>
         <option value="payment_rejected">สลิปไม่ผ่าน</option>
         <option value="paid">ยืนยันชำระแล้ว</option>
@@ -82,13 +102,21 @@
         <option value="completed">สำเร็จ</option>
         <option value="cancelled">ยกเลิก</option>
       </select>
-      <button id="summaryBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-printer"></use></svg>รวมออเดอร์ / พิมพ์</button>
+      <button id="shippingExportBtn" class="btn ghost" type="button">ส่งออกงานจัดส่ง</button>
+      <button id="summaryBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-printer"></use></svg>ใบสรุปออเดอร์ที่ชำระแล้ว</button>
       <button id="exportBtn" class="btn ghost" type="button"><svg class="icon"><use href="#i-download"></use></svg>ส่งออก CSV</button>
     </div>
 
+    <div class="label-batch-tools" aria-label="เลือกออเดอร์และพิมพ์ใบแปะหน้าซองบน A4">
+      <label class="batch-select-all"><input type="checkbox" id="selectVisibleOrders"> เลือกออเดอร์ที่แสดงอยู่ <span id="selectedOrderCount">(0 รายการ)</span></label>
+      <button type="button" class="btn ghost" id="clearSelectedOrders">ล้างที่เลือก</button>
+      <button type="button" class="btn primary" id="printSelectedShipping">พิมพ์ใบจัดส่ง A4 (8 ใบ/หน้า)</button>
+      <button type="button" class="btn primary" id="printSelectedPickup">พิมพ์ใบรับหน้างาน A4 (25 ใบ/หน้า)</button>
+      <p>เลือกออเดอร์ที่ต้องการแล้วกดพิมพ์ตามประเภท • ระบบพิมพ์เฉพาะรายการที่ชำระเงินแล้ว ไม่รวมรายการยกเลิกหรือชำระเงินไม่สำเร็จ • พิมพ์จำนวนน้อยกว่า 8 / 25 ใบก็ใช้กระดาษ A4 ตามปกติ</p>
+    </div>
     <div id="desktopOrders" class="table-scroll admin-desktop-table">
       <table class="admin-table admin-payment-table">
-        <thead><tr><th>คำสั่งซื้อ</th><th>ลูกค้า</th><th>รายการ</th><th>ยอด</th><th>วิธีรับ</th><th>สถานะ</th><th>สลิป / จัดการ</th></tr></thead>
+        <thead><tr><th aria-label="เลือกออเดอร์">เลือก</th><th>คำสั่งซื้อ</th><th>ลูกค้า</th><th>รายการ</th><th>ยอด</th><th>วิธีรับ / พัสดุ</th><th>สถานะ</th><th>สลิป / จัดการ</th></tr></thead>
         <tbody id="adminOrders"></tbody>
       </table>
     </div>
@@ -96,12 +124,33 @@
     <div id="emptyState" class="admin-empty" hidden><svg class="icon"><use href="#i-receipt"></use></svg><strong>ไม่พบคำสั่งซื้อ</strong><span>ยังไม่มีข้อมูลที่ตรงกับตัวกรองนี้</span></div>
   </section>
 
-  <section class="admin-note"><svg class="icon"><use href="#i-info"></use></svg><div><b>ฐานข้อมูลกลาง Google Sheets</b><span>เมื่อตั้งค่า Web app URL ใน config.js แล้ว ออเดอร์จากมือถือของลูกค้าทุกเครื่องจะเข้าชีตเดียวกัน และสลิปจะถูกเก็บใน Google Drive</span></div></section>
+  <section class="admin-note"><svg class="icon"><use href="#i-info"></use></svg><div><b>ข้อมูลกลาง Google Sheets และการติดตามพัสดุ</b><span>เลขพัสดุและหมายเหตุบันทึกใน Google Sheets ส่วน Tracking API ทำงานจาก Google Apps Script เท่านั้น โดยต้องตั้งค่าคีย์ API ไปรษณีย์ไทยไว้ใน Script Properties ไม่ใช่ config.js</span></div></section>
 </main>
 
 <dialog id="orderDialog" class="admin-dialog">
   <div class="dialog-head"><div><span class="section-kicker">ORDER DETAIL</span><h2 id="dialogTitle">รายละเอียดคำสั่งซื้อ</h2></div><button id="closeDialog" class="dialog-close" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
   <div id="dialogBody"></div>
+</dialog>
+
+<dialog id="manualOrderDialog" class="admin-dialog manual-order-dialog">
+  <div class="dialog-head"><div><span class="section-kicker">NEW ORDER</span><h2>เพิ่มคำสั่งซื้อจากช่องทางอื่น</h2></div><button id="closeManualOrder" class="dialog-close" type="button" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
+  <form id="manualOrderForm" class="manual-order-form">
+    <div class="manual-grid"><label>ชื่อผู้รับ / ผู้สั่ง <b>*</b><input name="name" maxlength="150" required autocomplete="name" placeholder="ชื่อ - นามสกุล"></label><label>เบอร์โทร <b>*</b><input name="phone" type="tel" maxlength="30" required autocomplete="tel" placeholder="08x-xxx-xxxx"></label></div>
+    <div class="manual-grid"><label>ช่องทางการสั่งซื้อ <select name="orderSource"><option value="phone">โทรศัพท์</option><option value="facebook">Facebook / Messenger</option><option value="line">LINE</option><option value="store">หน้าร้าน</option><option value="other">ช่องทางอื่น</option></select></label><label>วิธีรับสินค้า <select name="shipping" id="manualShipping"><option value="pickup">รับเอง</option><option value="shipping">จัดส่ง</option></select></label></div>
+    <fieldset id="manualAddressFields" class="manual-address" hidden><legend>ที่อยู่ปลายทางสำหรับจัดส่ง</legend><label>บ้านเลขที่ อาคาร หมู่ ซอย ถนน <b>*</b><textarea name="address" maxlength="500" rows="2" placeholder="บ้านเลขที่ / อาคาร / หมู่ / ซอย / ถนน"></textarea></label><div class="manual-grid"><label>ตำบล / แขวง <b>*</b><input name="subdistrict" maxlength="100"></label><label>อำเภอ / เขต <b>*</b><input name="district" maxlength="100"></label><label>จังหวัด <b>*</b><input name="province" maxlength="100"></label><label>รหัสไปรษณีย์ <b>*</b><input name="postalCode" inputmode="numeric" pattern="[0-9]{5}" maxlength="5"></label></div></fieldset>
+    <fieldset class="manual-products"><legend>รายการเสื้อ</legend><div id="manualSizeRows" class="manual-size-rows"></div><button id="addManualSize" type="button" class="btn ghost">＋ เพิ่มไซส์</button></fieldset>
+    <div class="manual-grid"><label>ค่าจัดส่ง (บาท)<input name="shippingFee" id="manualShippingFee" type="number" min="0" max="100000" step="1" value="0" required></label><label>สถานะเริ่มต้น<select name="status"><option value="pending_payment">ยังไม่ชำระเงิน</option><option value="paid">ชำระเงินแล้ว (ได้รับเงินจริงแล้ว)</option></select></label></div>
+    <label>หมายเหตุภายใน<textarea name="adminNote" maxlength="500" rows="2" placeholder="เช่น ลูกค้าทัก LINE / นัดรับสินค้าวันเสาร์"></textarea></label>
+    <div class="manual-order-total">ยอดรวม <strong id="manualOrderTotal">0 บาท</strong></div>
+    <p class="shipping-hint">ระบบคิดราคาตามไซส์ที่ตั้งไว้ในร้าน (ไซส์ปกติ 200 บาท / 6XL–7XL 250 บาท) และบันทึกออเดอร์รวมกับรายการหน้าเว็บ</p>
+    <div class="manual-form-actions"><button id="saveManualOrderBtn" type="submit" class="btn primary">บันทึกออเดอร์</button></div>
+  </form>
+</dialog>
+
+<dialog id="labelDialog" class="admin-dialog label-dialog">
+  <div class="dialog-head no-print"><div><span class="section-kicker">PARCEL LABEL</span><h2>ใบแปะหน้าซอง</h2></div><button id="closeLabelDialog" class="dialog-close" type="button" aria-label="ปิด"><svg class="icon"><use href="#i-x"></use></svg></button></div>
+  <div id="parcelPrintArea" class="parcel-print-area"></div>
+  <div class="label-actions no-print"><span id="labelPageDetails">พิมพ์บนกระดาษ A4 ขนาดจริง (100%) • ระบบเรียงใบแปะตามจำนวนออเดอร์โดยอัตโนมัติ</span><button id="printLabelBtn" class="btn primary" type="button"><svg class="icon"><use href="#i-printer"></use></svg>พิมพ์ใบแปะหน้าซอง</button></div>
 </dialog>
 
 
