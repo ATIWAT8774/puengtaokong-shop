@@ -116,6 +116,16 @@
     );
   }
 
+  async function createAdminOrder(adminToken, order) {
+    // POST the administrator token in the request body; poll through an authenticated endpoint.
+    await formPost('createAdminOrder', {adminToken, order});
+    return poll(
+      () => jsonp('listOrders', {adminToken}, 30000).then(orders => orders.find(o => o.orderNo === order.orderNo)),
+      result => !!result?.orderNo,
+      {attempts: 18, delay: 900}
+    );
+  }
+
   async function uploadSlip(data) {
     await formPost('uploadSlip', data);
     return poll(
@@ -129,12 +139,15 @@
     isConfigured,
     ping: () => jsonp('ping'),
     createOrder,
+    createAdminOrder,
     uploadSlip,
     getOrder: (orderNo, phone) => jsonp('getOrder', {orderNo, phone}),
     searchOrders: query => jsonp('searchOrders', {query}, 25000),
     listOrders: adminToken => jsonp('listOrders', {adminToken}, 30000),
     updateStatus: (adminToken, orderNo, status) => jsonp('updateStatus', {adminToken, orderNo, status}, 30000),
     confirmPayment: (adminToken, orderNo) => jsonp('confirmPayment', {adminToken, orderNo}, 30000),
-    rejectPayment: (adminToken, orderNo) => jsonp('rejectPayment', {adminToken, orderNo}, 30000)
+    rejectPayment: (adminToken, orderNo) => jsonp('rejectPayment', {adminToken, orderNo}, 30000),
+    saveShipping: (adminToken, orderNo, trackingNo, adminNote) => jsonp('saveShipping', {adminToken, orderNo, trackingNo, adminNote}, 30000),
+    trackShipment: (adminToken, orderNo) => jsonp('trackShipment', {adminToken, orderNo}, 35000)
   };
 })();
