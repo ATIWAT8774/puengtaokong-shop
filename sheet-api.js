@@ -126,6 +126,14 @@
     );
   }
 
+  async function editAdminOrder(adminToken, order){
+    await formPost('editAdminOrder',{adminToken,order});
+    return poll(
+      () => jsonp('listOrders',{adminToken},30000).then(orders=>orders.find(o=>o.orderNo===order.orderNo)),
+      result => !!result?.orderNo && result.updatedAt!==order.expectedUpdatedAt,
+      {attempts:18,delay:900}
+    );
+  }
   async function uploadSlip(data) {
     await formPost('uploadSlip', data);
     return poll(
@@ -140,6 +148,7 @@
     ping: () => jsonp('ping'),
     createOrder,
     createAdminOrder,
+    editAdminOrder,
     uploadSlip,
     getOrder: (orderNo, phone) => jsonp('getOrder', {orderNo, phone}),
     searchOrders: query => jsonp('searchOrders', {query}, 25000),
