@@ -18,6 +18,7 @@ let currentSummaryText = '';
 let remoteOrders = [];
 let adminToken = sessionStorage.getItem('ptk-admin-token') || '';
 let isLoading = false;
+let editingOrderNo = null;
 
 function readJSON(key, fallback){ try{return JSON.parse(localStorage.getItem(key) || '') || fallback;}catch{return fallback;} }
 function writeJSON(key, value){ try{localStorage.setItem(key, JSON.stringify(value));return true;}catch{return false;} }
@@ -139,8 +140,9 @@ function renderInsights(orders){
   }
   const byDate=new Map(daily.map(x=>[x.key,x]));
   orders.filter(o=>PAID_STATUSES.has(o.status)).forEach(o=>{
-    if(!o.createdAt || Number.isNaN(new Date(o.createdAt).getTime()))return;
-    const key=thaiDateKey(o.createdAt);
+    if(!o.verifiedAt && !o.paidAt)return;
+    if(Number.isNaN(new Date(o.verifiedAt || o.paidAt).getTime()))return;
+    const key=thaiDateKey(o.verifiedAt || o.paidAt || o.createdAt);
     if(byDate.has(key))byDate.get(key).value+=Number(o.total||0);
   });
   const top=Math.max(1,...daily.map(d=>d.value));
@@ -183,7 +185,7 @@ function renderDesktop(orders){
     <td><b>${money(o.total)}</b></td>
     <td>${o.shipping==='shipping'?'จัดส่ง':'รับเอง'}${o.trackingNo?`<span class="shipment-mini">${esc(o.trackingNo)}</span><span class="shipment-status">${esc(o.lastTrackStatus||'รอข้อมูลติดตาม')}</span>`:''}</td>
     <td><span class="status-badge ${o.status==='payment_rejected'?'status-rejected':''}">${statusLabel(o.status)}</span>${verifiedText(o)}<div class="admin-status-followup">${statusSelect(o,'admin-status-select')}</div></td>
-    <td><div class="admin-slip-cell">${slipAction(o)}${verifyActions(o)}<button class="btn mini ghost" data-print-label="${esc(o.orderNo)}">พิมพ์ใบแปะหน้าซอง</button></div></td>
+    <td><div class="admin-slip-cell">${slipAction(o)}${verifyActions(o)}<button class="btn mini ghost" data-edit-order="${esc(o.orderNo)}">แก้ไข</button><button class="btn mini ghost" data-print-label="${esc(o.orderNo)}">พิมพ์ใบแปะหน้าซอง</button></div></td>
   </tr>`).join('');
 }
 
@@ -199,7 +201,7 @@ function renderMobile(orders){
     </div>
     ${verifiedText(o)}
     <div style="margin-top:8px">${statusSelect(o)}</div>
-    <div class="order-card-actions"><button class="btn ghost" data-detail="${esc(o.orderNo)}">ดูรายละเอียด</button><button class="btn ghost" data-print-label="${esc(o.orderNo)}">พิมพ์ใบแปะหน้าซอง</button>${hasSlip(o)?`<button class="btn ghost" data-slip="${esc(o.orderNo)}"><svg class="icon"><use href="#i-image"></use></svg>ดูสลิป</button>`:''}${o.status==='payment_review'&&hasSlip(o)?`<button class="btn confirm-pay full-row" data-confirm-pay="${esc(o.orderNo)}"><svg class="icon"><use href="#i-check"></use></svg>ยืนยันชำระเงิน</button><button class="btn reject-pay full-row" data-reject-pay="${esc(o.orderNo)}">ปฏิเสธสลิป</button>`:''}</div>
+    <div class="order-card-actions"><button class="btn ghost" data-detail="${esc(o.orderNo)}">ดูรายละเอียด</button><button class="btn ghost" data-edit-order="${esc(o.orderNo)}">แก้ไข</button><button class="btn ghost" data-print-label="${esc(o.orderNo)}">พิมพ์ใบแปะหน้าซอง</button>${hasSlip(o)?`<button class="btn ghost" data-slip="${esc(o.orderNo)}"><svg class="icon"><use href="#i-image"></use></svg>ดูสลิป</button>`:''}${o.status==='payment_review'&&hasSlip(o)?`<button class="btn confirm-pay full-row" data-confirm-pay="${esc(o.orderNo)}"><svg class="icon"><use href="#i-check"></use></svg>ยืนยันชำระเงิน</button><button class="btn reject-pay full-row" data-reject-pay="${esc(o.orderNo)}">ปฏิเสธสลิป</button>`:''}</div>
   </article>`).join('');
 }
 
@@ -273,6 +275,7 @@ function bindRowActions(){
   $$('[data-admin-status]').forEach(sel=>{sel.dataset.oldValue=sel.value;});
   $$('[data-slip]').forEach(btn=>btn.onclick=()=>openSlip(btn.dataset.slip));
   $$('[data-detail]').forEach(btn=>btn.onclick=()=>openDetail(btn.dataset.detail));
+  $$('[data-edit-order]').forEach(btn=>btn.onclick=()=>openEditOrder(btn.dataset.editOrder));
   $$('[data-print-label]').forEach(btn=>btn.onclick=()=>openParcelLabel(btn.dataset.printLabel));
   $$('[data-confirm-pay]').forEach(btn=>btn.onclick=()=>confirmPayment(btn.dataset.confirmPay));
   $$('[data-reject-pay]').forEach(btn=>btn.onclick=()=>rejectPayment(btn.dataset.rejectPay));
@@ -354,10 +357,11 @@ function openDetail(orderNo){
     <section class="detail-section"><h3>รายการสินค้า</h3><div class="detail-items">${(o.items||[]).map(i=>`<div class="detail-item"><span>${esc(i.name||'เสื้อที่ระลึก')} / ${esc(i.size||'-')} × ${Number(i.qty||1)}</span><b>${money(i.lineTotal ?? Number(i.price||0)*Number(i.qty||1))}</b></div>`).join('')||'<span class="muted">ไม่มีรายการสินค้า</span>'}</div><div class="order-kv"><span>ค่าจัดส่ง</span><b>${money(o.shippingFee)}</b></div><div class="order-kv"><span>ยอดรวม</span><b class="detail-total">${money(o.total)}</b></div></section>
     <section class="detail-section"><h3>การชำระเงิน</h3><div class="order-kv"><span>สถานะ</span><b>${statusLabel(o.status)}</b></div><div class="order-kv"><span>เวลาที่ส่งสลิป</span><b>${formatDate(o.paidAt)}</b></div>${o.verifiedAt?`<div class="order-kv"><span>ยืนยันการชำระเงิน</span><b>${formatDate(o.verifiedAt)}</b></div>`:''}</section>
     ${o.shipping==='shipping'?`<section class="detail-section"><h3>จัดส่งและติดตามพัสดุ</h3><form id="shippingForm" class="shipping-form"><label>เลขพัสดุไปรษณีย์ไทย<input id="shippingTracking" autocomplete="off" value="${esc(o.trackingNo||'')}" maxlength="30" placeholder="เช่น EF582568151TH" aria-label="เลขพัสดุไปรษณีย์ไทย"></label><label>หมายเหตุภายใน (ไม่แสดงแก่ลูกค้า)<textarea id="shippingNote" maxlength="500" placeholder="รายละเอียดสำหรับแอดมิน">${esc(o.adminNote||'')}</textarea></label><div class="shipping-actions"><button type="submit" class="btn primary">บันทึกเลขพัสดุ / หมายเหตุ</button><button id="trackParcelBtn" type="button" class="btn ghost" ${!o.trackingNo?'disabled':''}>ตรวจสถานะล่าสุด</button><a class="btn ghost" target="_blank" rel="noopener noreferrer" href="${o.trackingNo?`https://track.thailandpost.co.th/?trackNumber=${encodeURIComponent(o.trackingNo)}`:'https://track.thailandpost.co.th/'}">เปิดเว็บไปรษณีย์ไทย</a></div><p class="shipping-hint">บันทึกเลขพัสดุไม่ได้เปลี่ยนสถานะออเดอร์โดยอัตโนมัติ หลังส่งสินค้าจริงให้เลือก “จัดส่งแล้ว” ในตาราง</p>${o.lastTrackAt?`<p class="shipping-hint">ตรวจสอบล่าสุด: ${formatDate(o.lastTrackAt)} — ${esc(o.lastTrackStatus||'-')}</p>`:''}<div id="trackingHistory" class="tracking-history" aria-live="polite"></div></form></section>`:`<section class="detail-section"><h3>รับสินค้าหน้างาน</h3><p class="shipping-hint">รายการนี้ไม่ต้องบันทึกเลขพัสดุ</p></section>`}
-    <div class="detail-print"><button type="button" id="detailLabelBtn" class="btn primary">พิมพ์ใบแปะหน้าซอง</button></div>`;
+    <div class="detail-print"><button type="button" id="detailEditBtn" class="btn ghost">แก้ไขข้อมูลออเดอร์</button> <button type="button" id="detailLabelBtn" class="btn primary">พิมพ์ใบแปะหน้าซอง</button></div>`;
   $('#shippingForm')?.addEventListener('submit',e=>{e.preventDefault();saveShipping(orderNo);});
   $('#trackParcelBtn')?.addEventListener('click',()=>trackShipment(orderNo));
   $('#detailLabelBtn')?.addEventListener('click',()=>openParcelLabel(orderNo));
+  $('#detailEditBtn')?.addEventListener('click',()=>openEditOrder(orderNo));
   $('#orderDialog').showModal();
 }
 
@@ -367,7 +371,7 @@ const LABEL_PAGE_CAPACITY = {shipping:8,pickup:25};
 function labelOrderValid(o){
   if(!selectableForPrinting(o))return 'ยังไม่ได้ยืนยันชำระเงิน หรือออเดอร์ถูกยกเลิก';
   if(!String(o.customer?.name||'').trim() || !String(o.customer?.phone||'').trim())return 'ชื่อหรือเบอร์โทรไม่ครบ';
-  if(o.shipping==='shipping' && (!String(o.customer?.address||'').trim() || !/^\d{5}$/.test(String(o.customer?.postalCode||''))))return 'ที่อยู่หรือรหัสไปรษณีย์ไม่ครบ';
+  if(o.shipping==='shipping' && (!String(o.customer?.address||'').trim() || !String(o.customer?.subdistrict||'').trim() || !String(o.customer?.district||'').trim() || !String(o.customer?.province||'').trim() || !/^\d{5}$/.test(String(o.customer?.postalCode||''))))return 'ที่อยู่ ตำบล อำเภอ จังหวัด หรือรหัสไปรษณีย์ไม่ครบ';
   return '';
 }
 function parcelLabelHtml(o){
@@ -399,6 +403,23 @@ function printParcelOrders(inputOrders, kind){
   if($('#orderDialog').open)$('#orderDialog').close();
   if($('#labelDialog').open)$('#labelDialog').close();
   $('#labelDialog').showModal();
+  requestAnimationFrame(fitParcelLabels);
+}
+function fitParcelLabels(){
+  let valid=true;
+  $$('.parcel-label-shipping').forEach(label=>{
+    const addr=label.querySelector('.parcel-address-main');
+    const name=label.querySelector('.parcel-name');
+    if(!addr||!name)return;
+    addr.style.fontSize='';name.style.fontSize='';
+    for(let size=6.8;addr.scrollHeight>addr.clientHeight+1&&size>4.2;){size-=.3;addr.style.fontSize=size+'pt';}
+    for(let size=10.4;name.scrollHeight>name.clientHeight+1&&size>8;){size-=.3;name.style.fontSize=size+'pt';}
+    const over=addr.scrollHeight>addr.clientHeight+1||name.scrollHeight>name.clientHeight+1;
+    label.classList.toggle('parcel-overflow',over);
+    valid=valid&&!over;
+  });
+  $('#labelPageDetails').textContent=$('#labelPageDetails').textContent.replace(/ • ตรวจพบข้อความล้นพื้นที่/g,'')+(valid?'':' • ตรวจพบข้อความล้นพื้นที่');
+  return valid;
 }
 function openParcelLabel(orderNo){
   const order=getOrders().find(o=>o.orderNo===orderNo);
@@ -422,19 +443,45 @@ function createSizeRow(size='M',qty=1){
 function updateManualTotal(){
   const rows=$$('#manualSizeRows .manual-size-row');
   const subtotal=rows.reduce((sum,row)=>sum+priceForSize(row.querySelector('[name="size"]').value)*Math.max(0,Number(row.querySelector('[name="qty"]').value||0)),0);
-  const fee=Number($('#manualShippingFee').value||0);
+  const fee=$('#manualShipping').value==='shipping'?Number($('#manualShippingFee').value||0):0;
   $('#manualOrderTotal').textContent=money(subtotal+fee);
 }
-function updateManualShipping(){
+function updateManualShipping(resetFee=true){
   const shipping=$('#manualShipping').value==='shipping';
   $('#manualAddressFields').hidden=!shipping;
   $$('#manualAddressFields textarea, #manualAddressFields input').forEach(el=>el.required=shipping);
-  $('#manualShippingFee').value=shipping?'50':'0';updateManualTotal();
+  if(resetFee)$('#manualShippingFee').value=shipping?'50':'0';updateManualTotal();
 }
 function openManualOrder(){
   if(remoteEnabled()&&!adminToken)return toast('กรุณาเชื่อมต่อบัญชีหลังบ้านก่อนเพิ่มออเดอร์');
+  editingOrderNo=null;
   $('#manualOrderForm').reset();$('#manualSizeRows').replaceChildren(createSizeRow('M',1));
+  $('#manualOrderTitle').textContent='เพิ่มคำสั่งซื้อจากช่องทางอื่น';
+  $('#manualInitialStatus').hidden=false;$('#manualEditHint').hidden=true;
+  $('#saveManualOrderBtn').textContent='บันทึกออเดอร์';
   updateManualShipping();$('#manualOrderDialog').showModal();
+}
+function openEditOrder(orderNo){
+  if(remoteEnabled()&&!adminToken)return toast('กรุณาเชื่อมต่อบัญชีหลังบ้านก่อนแก้ไข');
+  const o=getOrders().find(x=>x.orderNo===orderNo);if(!o)return toast('ไม่พบออเดอร์');
+  if($('#orderDialog').open)$('#orderDialog').close();
+  editingOrderNo=orderNo;
+  const f=$('#manualOrderForm');f.reset();
+  const c=o.customer||{};
+  for(const key of ['name','phone','address','subdistrict','district','province','postalCode'])f.elements.namedItem(key).value=c[key]||'';
+  f.elements.namedItem('orderSource').value=o.orderSource||'website';
+  if(!f.elements.namedItem('orderSource').value){
+    const opt=document.createElement('option');opt.value='website';opt.textContent='เว็บไซต์';f.elements.namedItem('orderSource').append(opt);
+    f.elements.namedItem('orderSource').value='website';
+  }
+  f.elements.namedItem('shipping').value=o.shipping;
+  f.elements.namedItem('shippingFee').value=Number(o.shippingFee||0);
+  f.elements.namedItem('adminNote').value=o.adminNote||'';
+  $('#manualSizeRows').replaceChildren(...(o.items||[]).map(i=>createSizeRow(i.size,i.qty)));
+  $('#manualOrderTitle').textContent=`แก้ไขออเดอร์ ${orderNo}`;
+  $('#manualInitialStatus').hidden=true;$('#manualEditHint').hidden=false;
+  $('#saveManualOrderBtn').textContent='บันทึกการแก้ไข';
+  updateManualShipping(false);$('#manualOrderDialog').showModal();
 }
 function makeManualOrderNo(){
   const d=new Date();const date=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0'),String(d.getHours()).padStart(2,'0'),String(d.getMinutes()).padStart(2,'0'),String(d.getSeconds()).padStart(2,'0')].join('');
@@ -452,30 +499,37 @@ async function saveManualOrder(e){
   if(shipping==='shipping'&&(!customer.address||!customer.subdistrict||!customer.district||!customer.province||!/^[0-9]{5}$/.test(customer.postalCode)))return toast('กรุณากรอกที่อยู่จัดส่งให้ครบทุกช่อง');
   const shippingFee=Number(fd.get('shippingFee'));
   if(!Number.isFinite(shippingFee)||shippingFee<0||shippingFee>100000)return toast('ค่าจัดส่งไม่ถูกต้อง');
-  const order={orderNo:makeManualOrderNo(),customer,shipping,items,shippingFee,status:fd.get('status'),orderSource:fd.get('orderSource'),adminNote:String(fd.get('adminNote')||'').trim()};
+  const old=editingOrderNo?getOrders().find(o=>o.orderNo===editingOrderNo):null;
+  if(editingOrderNo&&!old)return toast('ไม่พบออเดอร์ที่กำลังแก้ไข');
+  if(old && PAID_STATUSES.has(old.status) && old.shipping!==shipping && !confirm('ออเดอร์นี้ชำระเงินแล้ว ต้องการเปลี่ยนวิธีรับสินค้าใช่หรือไม่?'))return;
+  const order={orderNo:old?.orderNo||makeManualOrderNo(),customer,shipping,items,shippingFee:shipping==='shipping'?shippingFee:0,status:old?.status||fd.get('status'),orderSource:fd.get('orderSource'),adminNote:String(fd.get('adminNote')||'').trim(),expectedUpdatedAt:old?.updatedAt||''};
+  const newTotal=items.reduce((sum,i)=>sum+priceForSize(i.size)*i.qty,0)+order.shippingFee;
+  if(old&&PAID_STATUSES.has(old.status)&&newTotal!==Number(old.total||0)&&!confirm(`ยอดที่ชำระแล้ว ${money(old.total)} จะเปลี่ยนเป็น ${money(newTotal)}\nระบบไม่รับชำระเพิ่มหรือคืนเงินให้อัตโนมัติ ยืนยันแก้ไขหรือไม่?`))return;
   const saveBtn=$('#saveManualOrderBtn');saveBtn.disabled=true;saveBtn.textContent='กำลังบันทึก...';
   try{
     let saved;
     if(remoteEnabled()){
-      saved=await api().createAdminOrder(adminToken,order);
+      saved=old?await api().editAdminOrder(adminToken,order):await api().createAdminOrder(adminToken,order);
       if(!saved?.orderNo)throw new Error('ยังตรวจสอบการบันทึกไม่สำเร็จ');
-      remoteOrders.unshift(saved);
+      if(old){const idx=remoteOrders.findIndex(x=>x.orderNo===old.orderNo);if(idx>=0)remoteOrders[idx]=saved;}
+      else remoteOrders.unshift(saved);
     }else{
       const now=new Date().toISOString(),expanded=items.map(i=>({...i,name:'เสื้อที่ระลึก',price:priceForSize(i.size),lineTotal:priceForSize(i.size)*i.qty}));
       const subtotal=expanded.reduce((sum,i)=>sum+i.lineTotal,0);
-      saved={...order,items:expanded,subtotal,shippingFee:shipping==='shipping'?shippingFee:0,total:subtotal+(shipping==='shipping'?shippingFee:0),createdAt:now,updatedAt:now,verifiedAt:order.status==='paid'?now:null,paidAt:order.status==='paid'?now:null};
-      const existing=getOrders();existing.unshift(saved);if(!saveLocalOrders(existing))throw new Error('บันทึกข้อมูลในเบราว์เซอร์ไม่สำเร็จ');
+      saved={...(old||{}),...order,items:expanded,subtotal,shippingFee:shipping==='shipping'?shippingFee:0,total:subtotal+(shipping==='shipping'?shippingFee:0),createdAt:old?.createdAt||now,updatedAt:now,verifiedAt:old?.verifiedAt||(order.status==='paid'?now:null),paidAt:old?.paidAt||(order.status==='paid'?now:null)};
+      const existing=getOrders();if(old){const idx=existing.findIndex(x=>x.orderNo===old.orderNo);existing[idx]=saved;}else existing.unshift(saved);
+      if(!saveLocalOrders(existing))throw new Error('บันทึกข้อมูลในเบราว์เซอร์ไม่สำเร็จ');
     }
-    $('#manualOrderDialog').close();filterStatus='all';$('#statusFilter').value='all';searchText='';$('#searchInput').value='';renderAll();toast(`เพิ่มออเดอร์ ${saved.orderNo} แล้ว`);
+    $('#manualOrderDialog').close();editingOrderNo=null;filterStatus='all';$('#statusFilter').value='all';searchText='';$('#searchInput').value='';renderAll();toast(`${old?'แก้ไข':'เพิ่ม'}ออเดอร์ ${saved.orderNo} แล้ว`);
   }catch(err){toast(err.message||'เพิ่มออเดอร์ไม่สำเร็จ กรุณาตรวจสอบก่อนลองใหม่');}
-  finally{saveBtn.disabled=false;saveBtn.textContent='บันทึกออเดอร์';}
+  finally{saveBtn.disabled=false;saveBtn.textContent=editingOrderNo?'บันทึกการแก้ไข':'บันทึกออเดอร์';}
 }
 
 function openOrderSummary(){
   // Order roll-up is the confirmed-sales list for the whole shop, independent of the active status tab.
   const sourceOrders=getOrders();
   const orders=summaryEligibleOrders(sourceOrders);
-  if(!orders.length) return toast('ไม่มีออเดอร์ที่ชำระเงินแล้วในรายการที่กรอง');
+  if(!orders.length) return toast('ไม่มีออเดอร์ที่ยืนยันชำระเงินแล้ว');
   const excludedCount=sourceOrders.length-orders.length;
   const totals=summarySizeTotals(orders);
   $('#summaryGeneratedAt').textContent=`พิมพ์เมื่อ ${formatDate(new Date())} • เฉพาะชำระเงินแล้วและจัดส่งแล้ว${excludedCount?` • ไม่นับ ${excludedCount} ออเดอร์`:''}`;
@@ -530,6 +584,7 @@ $('#manualOrderForm').onsubmit=saveManualOrder;
 $('#closeManualOrder').onclick=()=>$('#manualOrderDialog').close();
 $('#closeLabelDialog').onclick=()=>$('#labelDialog').close();
 $('#printLabelBtn').onclick=()=>{
+  if(!fitParcelLabels())return toast('มีใบแปะที่ข้อความยาวเกินพื้นที่ กรุณาแก้ไขที่อยู่หรือใช้ใบขนาดใหญ่');
   document.body.classList.add('printing-parcel-label');
   // CSS @page explicitly forces A4; all content is already laid out as whole A4 sheets.
   window.print();
